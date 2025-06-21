@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
+import plotly.graph_objects as go 
 from pathlib import Path
-import numpy as np # For numerical operations and NaN handling
+import numpy as np 
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -19,15 +19,25 @@ st.markdown("---") # Separator for cleaner look
 # --- Data Loading (Cached for performance) ---
 @st.cache_data
 def load_data():
-    # Define the base path relative to the current script's location
-    # This assumes your 'data' folder is in the SAME directory as app.py
-    base_path = Path(__file__).parent / "data" 
+    # --- REFATOR: Corrected base_path for the README's detailed structure ---
+    # Path(__file__) is:  /telemetry-lakehouse/analytics/streamlit_app/app.py
+    # .parent gets:       /telemetry-lakehouse/analytics/streamlit_app/
+    # .parent.parent gets: /telemetry-lakehouse/analytics/
+    # .parent.parent.parent gets: /telemetry-lakehouse/ (This is the project root)
+    # / "data" then points to: /telemetry-lakehouse/data/
+    base_path = Path(__file__).parent.parent.parent / "data" 
 
     try:
         # Load core data
         df_feature_events = pd.read_csv(base_path / "feature_usage_hourly_sample.csv", parse_dates=["window_start"])
         df_users = pd.read_csv(base_path / "users.csv")
         
+        # Load funnel data (assuming these are also in the main data/ folder)
+        df_funnel_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
+        df_funnel_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
+        df_funnel_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+
+
         # --- Data Cleaning/Preparation ---
         # Ensure 'window_start' is datetime
         df_feature_events['window_start'] = pd.to_datetime(df_feature_events['window_start'], errors='coerce')
@@ -39,8 +49,7 @@ def load_data():
             st.stop()
         if 'user_id' not in df_feature_events.columns:
             st.warning("Warning: 'user_id' not found in feature_events. Some user-centric insights may be limited.")
-            # Create a dummy user_id if missing for feature_events to allow basic functionality
-            df_feature_events['user_id'] = 'unknown_user' 
+            df_feature_events['user_id'] = 'unknown_user' # Assign dummy if missing
         
         # Merge feature events with user metadata for enriched data
         df_all_data_merged = pd.merge(df_feature_events, df_users, on='user_id', how='left')
@@ -48,7 +57,7 @@ def load_data():
 
         # --- Prepare Session Funnel Data ---
         session_funnel = (
-            df_all_data_merged.groupby("user_id") # Use merged data for sessions
+            df_all_data_merged.groupby("user_id") 
             .agg(session_start=("window_start", "min"),
                  session_end=("window_start", "max"),
                  feature_count=("feature", "nunique"),
@@ -57,16 +66,16 @@ def load_data():
         )
         session_funnel['session_duration_hours'] = (session_funnel['session_end'] - session_funnel['session_start']).dt.total_seconds() / 3600
         
-        return df_all_data_merged, df_users, session_funnel 
+        return df_all_data_merged, df_users, session_funnel, df_funnel_onboarding, df_funnel_feature_adoption, df_funnel_workflow_completion
     except FileNotFoundError as e:
-        st.error(f"Required data file not found: {e.filename}. Please ensure all CSVs are in the '{base_path.name}/' directory.")
+        st.error(f"Required data file not found: {e.filename}. Please ensure all CSVs are in the '{base_path.name}/' directory as specified in the README.")
         st.stop()
     except Exception as e:
-        st.error(f"An error occurred during data loading: {e}. Please check your CSV file contents and column names.")
+        st.error(f"An unexpected error occurred during data loading: {e}. Please check your CSV file contents and column names.")
         st.stop()
 
 # Load all dataframes
-df_all_data, users_orig, session_funnel_orig = load_data()
+df_all_data, users_orig, session_funnel_orig, funnel_onboarding_orig, funnel_feature_adoption_orig, funnel_workflow_completion_orig = load_data()
 
 
 # --- Sidebar Filters ---
@@ -77,7 +86,7 @@ if not df_all_data['window_start'].empty:
     min_date_val = df_all_data['window_start'].min().date()
     max_date_val = df_all_data['window_start'].max().date()
 else:
-    min_date_val = pd.to_datetime('2024-01-01').date() # Default if no date data
+    min_date_val = pd.to_datetime('2024-01-01').date() 
     max_date_val = pd.to_datetime('2024-01-01').date()
 
 date_range = st.sidebar.date_input(
@@ -90,8 +99,8 @@ date_range = st.sidebar.date_input(
 # Ensure date_range has two elements
 if len(date_range) == 2:
     start_date = pd.to_datetime(date_range[0])
-    end_date = pd.to_datetime(date_range[1]) + pd.Timedelta(days=1) # Include the end date
-else: # Fallback for initial state or error where only one date is picked
+    end_date = pd.to_datetime(date_range[1]) + pd.Timedelta(days=1) 
+else: 
     start_date = pd.to_datetime(min_date_val)
     end_date = pd.to_datetime(max_date_val) + pd.Timedelta(days=1)
 
@@ -134,6 +143,27 @@ filtered_session_funnel = session_funnel_orig[
     (session_funnel_orig['session_start'] < end_date)
 ].copy()
 
+# Prepare filtered funnel datasets for the Funnel Analysis tab
+# Note: These are filtered by date and user_id, but NOT by 'feature' selection
+filtered_funnels = {
+    "Onboarding Funnel": funnel_onboarding_orig[
+        (funnel_onboarding_orig['user_id'].isin(selected_users)) &
+        (funnel_onboarding_orig['timestamp'] >= start_date) &
+        (funnel_onboarding_orig['timestamp'] < end_date)
+    ].copy(),
+    "Feature Adoption Funnel": funnel_feature_adoption_orig[
+        (funnel_feature_adoption_orig['user_id'].isin(selected_users)) &
+        (funnel_feature_adoption_orig['timestamp'] >= start_date) &
+        (funnel_feature_adoption_orig['timestamp'] < end_date)
+    ].copy(),
+    "Workflow Completion Funnel": funnel_workflow_completion_orig[
+        (funnel_workflow_completion_orig['user_id'].isin(selected_users)) &
+        (funnel_workflow_completion_orig['timestamp'] >= start_date) &
+        (funnel_workflow_completion_orig['timestamp'] < end_date)
+    ].copy()
+}
+
+
 # Check if filtered data is empty
 if df_filtered.empty:
     st.warning("No data available for the selected filters. Please adjust your selections.")
@@ -173,7 +203,7 @@ with tab1:
     else: # Monthly
         freq = 'MS' # Month start for better grouping
 
-    # Create a date column truncated to the selected frequency
+    # Create a time_group column for aggregation
     df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
     
     events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
@@ -195,9 +225,10 @@ with tab2:
     st.markdown(f"##### Usage Trends for Selected Features")
     if not df_filtered.empty:
         # Ensure proper aggregation for line plot when multiple users are selected
-        df_feature_time_agg = df_filtered.groupby(['window_start', 'feature'])['event_count'].sum().reset_index()
+        df_feature_time_agg = df_filtered.groupby(['time_group', 'feature'])['event_count'].sum().reset_index() # Use time_group for consistency
+        df_feature_time_agg.columns = ['Date', 'feature', 'event_count'] # Rename for plotting
         
-        fig_feature_time = px.line(df_feature_time_agg, x="window_start", y="event_count", color="feature",
+        fig_feature_time = px.line(df_feature_time_agg, x="Date", y="event_count", color="feature",
                                title=f"Selected Features Usage Over Time ({time_granularity})")
         fig_feature_time.update_layout(xaxis_title=f"Date ({time_granularity})", yaxis_title="Event Count")
         st.plotly_chart(fig_feature_time, use_container_width=True)
@@ -320,28 +351,25 @@ with tab6:
     st.header("Funnel Analysis")
 
     funnel_options = {
-        "Onboarding Funnel": "funnel_onboarding.csv",
-        "Feature Adoption Funnel": "funnel_feature_adoption.csv",
-        "Workflow Completion Funnel": "funnel_workflow_completion.csv"
+        "Onboarding Funnel": filtered_funnels["Onboarding Funnel"], # Pass the filtered DF directly
+        "Feature Adoption Funnel": filtered_funnels["Feature Adoption Funnel"],
+        "Workflow Completion Funnel": filtered_funnels["Workflow Completion Funnel"]
     }
 
     selected_funnel_label = st.selectbox("Select Funnel", list(funnel_options.keys()))
-    funnel_path = Path(__file__).parent / "data" / funnel_options.get(selected_funnel_label)
+    df_funnel = funnel_options.get(selected_funnel_label) # Get the filtered DF
 
-    if funnel_path and funnel_path.exists():
+    if df_funnel is not None and not df_funnel.empty:
         try:
-            df_funnel = pd.read_csv(funnel_path, parse_dates=["timestamp"])
-            
             # Ensure funnel_step is sorted correctly for the visualization
             # You might need to define a specific order if unique().tolist() is not sorted as desired
+            # Otherwise, it sorts alphabetically.
             funnel_step_order = df_funnel["funnel_step"].unique().tolist()
-            # If you have a predefined order, uncomment and use this:
-            # funnel_step_order = ["Step 1 Name", "Step 2 Name", ...] 
             
             funnel_counts = df_funnel.groupby("funnel_step")["user_id"].nunique().reset_index()
             # Sort by the defined order for correct funnel visualization
             funnel_counts['funnel_step'] = pd.Categorical(funnel_counts['funnel_step'], categories=funnel_step_order, ordered=True)
-            funnel_counts = funnel_counts.sort_values("funnel_step")
+            funnel_counts = funnel_counts.sort_values("funnel_step", ascending=True) # Ensure ascending order for funnels
 
             funnel_counts.columns = ["Funnel Step", "User Count"]
 
@@ -357,10 +385,10 @@ with tab6:
             st.plotly_chart(fig_funnel, use_container_width=True)
 
         except pd.errors.ParserError:
-            st.error(f"Error: Could not parse the funnel data file for {selected_funnel_label}. Please ensure it's a valid CSV with 'user_id', 'funnel_step', and 'timestamp' columns.")
+            st.error(f"Error: Could not parse the funnel data for {selected_funnel_label}. Please ensure it's a valid DataFrame with 'user_id', 'funnel_step', and 'timestamp' columns.")
         except KeyError as e:
             st.error(f"Error: Missing expected column in funnel data: {e}. Please ensure 'user_id', 'funnel_step', and 'timestamp' exist.")
         except Exception as e:
-            st.error(f"An unexpected error occurred while loading funnel data: {e}")
+            st.error(f"An unexpected error occurred while processing funnel data: {e}")
     else:
-        st.error(f"Funnel data file not found for {selected_funnel_label} at path: {funnel_path}. Please ensure it exists in your 'data/' directory.")
+        st.info(f"No funnel data available for {selected_funnel_label} with the current filters. Please check your data or adjust filters.")
