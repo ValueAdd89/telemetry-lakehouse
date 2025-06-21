@@ -73,11 +73,9 @@ def load_data_from_csv():
         })
         
         time_aggregations = df_feature_events.copy()
-        # Ensure these are datetime objects for .dt accessor
         time_aggregations['day_start'] = time_aggregations['window_start'].dt.floor('D')
         time_aggregations['week_start'] = time_aggregations['window_start'].dt.to_period('W').dt.start_time
         time_aggregations['month_start'] = time_aggregations['window_start'].dt.to_period('M').dt.start_time
-
 
         return (
             df_all_data_merged,
@@ -122,7 +120,9 @@ def load_data_from_csv():
             else:
                 st.write(f"❌ Not found: {alt_path}")
             
-        st.stop()
+        # --- FIX: Return empty DataFrames on failure to prevent NoneType unpack error ---
+        return (pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), 
+                pd.DataFrame(), pd.DataFrame(), pd.DataFrame()) 
 
 @st.cache_data
 def load_data_from_dbt_outputs():
@@ -184,13 +184,16 @@ def load_data_from_dbt_outputs():
 
 # === Load Data Using Fallback Strategy ===
 try:
-    dbt_data_loaded = True
-    (df_all_data, df_users, df_user_sessions, df_top_features, 
-     df_funnel_analysis, df_overview_kpis, df_time_aggregations) = load_data_from_dbt_outputs()
+    dbt_data_loaded = True # Flag to indicate if dbt data was successfully loaded
+    loaded_data_tuple = load_data_from_dbt_outputs()
     
-    if df_all_data is None: # If dbt loading failed
+    if loaded_data_tuple is not None:
+        (df_all_data, df_users, df_user_sessions, df_top_features, 
+         df_funnel_analysis, df_overview_kpis, df_time_aggregations) = loaded_data_tuple
+    else: # If dbt loading failed (loaded_data_tuple is None)
         dbt_data_loaded = False
         st.warning("Could not load data from dbt outputs. Falling back to CSV files from 'data/spark_processed/'.")
+        # --- FIX: Direct call to load_data_from_csv which now guarantees a return tuple ---
         (df_all_data, df_users, df_user_sessions, df_top_features, 
          df_funnel_analysis, df_overview_kpis, df_time_aggregations) = load_data_from_csv()
 
@@ -207,7 +210,6 @@ except Exception as e:
     4. Refresh the page.
     """)
     st.stop()
-
 
 # --- Sidebar Filters (Updated for Mart Data) ---
 st.sidebar.header("Filter Data")
@@ -236,12 +238,23 @@ time_granularity = st.sidebar.selectbox(
 )
 
 # Feature Selection
-all_features_options = ['All'] + sorted(df_all_data['feature'].unique().tolist())
-selected_feature = st.sidebar.selectbox("Select Feature", options=all_features_options, index=0)
+# Ensure df_all_data is not empty and 'feature' column exists before creating options
+if not df_all_data.empty and 'feature' in df_all_data.columns:
+    all_features_options = ['All'] + sorted(df_all_data['feature'].unique().tolist())
+    selected_feature = st.sidebar.selectbox("Select Feature", options=all_features_options, index=0)
+else:
+    st.warning("Feature data not available for selection. Some dashboard sections may be limited.")
+    selected_feature = 'All' # Default to 'All' to avoid NameError
+
 
 # User Selection
-all_users_options = ['All'] + sorted(df_all_data['user_id'].unique().tolist())
-selected_user = st.sidebar.selectbox("Select User", options=all_users_options, index=0)
+# Ensure df_all_data is not empty and 'user_id' column exists before creating options
+if not df_all_data.empty and 'user_id' in df_all_data.columns:
+    all_users_options = ['All'] + sorted(df_all_data['user_id'].unique().tolist())
+    selected_user = st.sidebar.selectbox("Select User", options=all_users_options, index=0)
+else:
+    st.warning("User data not available for selection. Some dashboard sections may be limited.")
+    selected_user = 'All' # Default to 'All' to avoid NameError
 
 # Top N Features Slider
 top_n_features = st.sidebar.slider("Show Top N Features", min_value=5, max_value=20, value=10)
@@ -332,49 +345,24 @@ with tab1:
     # Create time groupings
     if time_granularity == "Daily":
         freq_str = 'D'
+        df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq_str).dt.to_timestamp()
     elif time_granularity == "Weekly":
         freq_str = 'W'
+        df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq_str).dt.to_timestamp()
     else: # Monthly
-        freq_str = 'M' # Use 'M' for period.to_timestamp() or .start_time
+        freq_str = 'M' # Use 'M' for period
+        # --- FIX: Use .dt.start_time for Monthly granularity to avoid ValueError ---
+        df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq_str).dt.start_time
+    
+    events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
+    events_over_time.columns = ['Date', 'Total Events']
 
-    # Use pre-aggregated time data from mart_feature_usage_by_time if available, otherwise calculate on-the-fly
-    if not df_time_aggregations.empty and f"{freq_str}_start" in df_time_aggregations.columns:
-        time_col = f"{freq_str}_start" # Column name in mart_feature_usage_by_time
-        
-        # Filter df_time_aggregations by date range and user/feature
-        time_data_filtered = df_time_aggregations[
-            (df_time_aggregations[time_col] >= start_date.normalize()) &
-            (df_time_aggregations[time_col] < end_date.normalize())
-        ].copy()
-        
-        if selected_feature != 'All':
-            time_data_filtered = time_data_filtered[time_data_filtered['feature'] == selected_feature]
-        if selected_user != 'All':
-            time_data_filtered = time_data_filtered[time_data_filtered['user_id'] == selected_user]
-            
-        if not time_data_filtered.empty:
-            events_over_time = time_data_filtered.groupby(time_col)['event_count'].sum().reset_index()
-            events_over_time.columns = ['Date', 'Total Events']
-            
-            fig_events_time = px.line(events_over_time, x="Date", y="Total Events", 
-                                     title=f"Total Events ({time_granularity}) - From dbt Mart")
-            st.plotly_chart(fig_events_time, use_container_width=True)
-        else:
-            st.info("No time-aggregated data available for current filters from dbt marts.")
+    if not events_over_time.empty:
+        fig_events_time = px.line(events_over_time, x="Date", y="Total Events", 
+                                     title=f"Total Events ({time_granularity}) - From dbt Marts")
+        st.plotly_chart(fig_events_time, use_container_width=True)
     else:
-        st.info("Falling back to on-the-fly time aggregation as dbt mart not available or incomplete.")
-        # Fallback to on-the-fly aggregation if mart is not available
-        df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq_str).dt.start_time if freq_str == 'M' else df_filtered['window_start'].dt.to_period(freq_str).dt.to_timestamp()
-        
-        events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
-        events_over_time.columns = ['Date', 'Total Events']
-
-        if not events_over_time.empty:
-            fig_events_time = px.line(events_over_time, x="Date", y="Total Events", 
-                                     title=f"Total Events ({time_granularity}) - On-the-fly calculation")
-            st.plotly_chart(fig_events_time, use_container_width=True)
-        else:
-            st.info("No event data over time for the current selection (even with fallback).")
+        st.info("No event data over time for the current selection.")
 
 
 # --- Tab 2: Feature Analysis ---
@@ -498,47 +486,29 @@ with tab4:
     else:
         st.info("No feature event data available to determine top features for the current filters.")
 
-# --- Tab 5: User Session Funnels (Renamed to User Session Insights) ---
+# --- Tab 5: Session Analysis ---
 with tab5:
-    st.header("User Session Insights")
-
-    if not df_sessions_filtered.empty: # Use df_sessions_filtered here
-        # Session KPIs
-        total_sessions_kpi = df_sessions_filtered.shape[0]
-        avg_features_per_session_kpi = df_sessions_filtered['feature_count'].mean() if 'feature_count' in df_sessions_filtered.columns else 0
-        avg_session_duration_kpi = df_sessions_filtered['session_duration_hours'].mean() if 'session_duration_hours' in df_sessions_filtered.columns else 0
-
-        col_sess_kpi1, col_sess_kpi2, col_sess_kpi3 = st.columns(3)
-        col_sess_kpi1.metric("Total Sessions", f"{total_sessions_kpi:,}")
-        col_sess_kpi2.metric("Avg Features per Session", f"{avg_features_per_session_kpi:.1f}")
-        col_sess_kpi3.metric("Avg Session Duration (Hours)", f"{avg_session_duration_kpi:.1f}h")
-
-
-        st.markdown("##### Feature Diversity per User Session (Filtered)")
-        fig_sessions = px.scatter(df_sessions_filtered, x="session_start", y="feature_count",
-                                  size="total_events", 
-                                  color="user_id", title="Feature Diversity per User Session",
-                                  hover_data=['session_end', 'total_events', 'session_duration_hours']) 
-        st.plotly_chart(fig_sessions, use_container_width=True)
-
-        st.markdown("---") # Separator
-
-        st.markdown("##### Sessions by Duration")
-        fig_session_duration = px.histogram(df_sessions_filtered, x="session_duration_hours", nbins=20,
-                                            title="Distribution of Session Duration (Hours)")
-        st.plotly_chart(fig_session_duration, use_container_width=True)
-
-        st.markdown("---") # Separator
-
-        st.markdown("##### Raw Session Data")
-        st.dataframe(df_sessions_filtered)
+    st.header("Session Analytics")
+    
+    if 'session_duration_hours' in df_sessions_filtered.columns and not df_sessions_filtered.empty:
+        # Session duration distribution
+        st.subheader("Session Duration Distribution")
+        fig_session_dist = px.histogram(df_sessions_filtered, x="session_duration_hours", nbins=20,
+                                         title="Distribution of Session Durations")
+        st.plotly_chart(fig_session_dist, use_container_width=True)
+        
+        # Session metrics
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Avg Session Duration", f"{df_sessions_filtered['session_duration_hours'].mean():.1f}h")
+        col2.metric("Median Session Duration", f"{df_sessions_filtered['session_duration_hours'].median():.1f}h")
+        col3.metric("Total Sessions", f"{len(df_sessions_filtered):,}")
     else:
-        st.info("No session data available for the selected filters.")
+        st.info("Session data not available with current data source.")
 
 # --- Tab 6: Funnel Analysis ---
 with tab6:
-    st.header("Funnel Analysis")
-
+    st.header("Conversion Funnel Analysis")
+    
     # Use the filtered funnel data from load_data_from_dbt_outputs or load_data_from_csv
     funnel_options_map = { 
         "Onboarding Funnel": df_funnel_analysis[df_funnel_analysis['funnel_name'] == 'onboarding'].copy() if 'funnel_name' in df_funnel_analysis.columns else pd.DataFrame(), 
