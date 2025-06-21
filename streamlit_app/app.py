@@ -70,7 +70,6 @@ def load_data_from_csv():
         time_aggregations['month_start'] = time_aggregations['window_start'].dt.to_period('M').dt.start_time
 
         st.success(f"✅ Loaded {len(df_feature_events):,} feature events from CSV files")
-        st.info("📊 Data sourced from: Spark processed CSV files (dbt marts not available)")
         
         return (
             df_all_data_merged,
@@ -164,7 +163,6 @@ def load_data_from_dbt_outputs():
                     df_all_data_merged = pd.merge(df_feature_events, df_users, on='user_id', how='left')
                     
                     st.success(f"✅ Loaded {len(df_feature_events):,} feature events from dbt marts")
-                    st.info("📊 Data sourced from: CSV → dbt staging → dbt intermediate → dbt marts")
                     
                     return (
                         df_all_data_merged,
@@ -193,12 +191,6 @@ def load_data():
     
     # Fallback to CSV files
     st.warning("🔄 dbt outputs not found. Falling back to Spark processed CSV files.")
-    st.info("""
-    **To use dbt marts:**
-    1. Navigate to dbt directory: `cd dbt`
-    2. Run dbt models: `dbt run`
-    3. Refresh this dashboard
-    """)
     
     return load_data_from_csv()
 
@@ -458,12 +450,142 @@ with tab6:
     if not df_funnel_analysis.empty:
         st.dataframe(df_funnel_analysis, use_container_width=True)
     else:
-        st.info("Funnel analysis data not available. This requires dbt mart models to be generated.")
-        st.markdown("""
-        **To enable funnel analysis:**
-        1. Run `cd dbt && dbt run` to generate mart models
-        2. Refresh this dashboard
-        """)
+        # Create fallback funnel analysis using available CSV data
+        st.subheader("User Journey Funnel")
+        
+        try:
+            # Load funnel data from CSV files
+            base_path = Path(__file__).parent.parent / "data" / "spark_processed"
+            
+            # Try to load funnel CSV files
+            try:
+                df_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
+                df_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
+                df_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+                
+                # Filter by date range
+                df_onboarding_filtered = df_onboarding[
+                    (df_onboarding['timestamp'] >= start_date) &
+                    (df_onboarding['timestamp'] < end_date)
+                ]
+                df_feature_adoption_filtered = df_feature_adoption[
+                    (df_feature_adoption['timestamp'] >= start_date) &
+                    (df_feature_adoption['timestamp'] < end_date)
+                ]
+                df_workflow_completion_filtered = df_workflow_completion[
+                    (df_workflow_completion['timestamp'] >= start_date) &
+                    (df_workflow_completion['timestamp'] < end_date)
+                ]
+                
+                # Create funnel metrics
+                funnel_metrics = []
+                
+                # Step 1: Users who started onboarding
+                users_started = df_onboarding_filtered['user_id'].nunique()
+                funnel_metrics.append({
+                    'step': 'Started Onboarding',
+                    'users': users_started,
+                    'conversion_rate': 100.0
+                })
+                
+                # Step 2: Users who completed onboarding
+                users_onboarded = df_onboarding_filtered[
+                    df_onboarding_filtered['step'] == 'completed'
+                ]['user_id'].nunique()
+                funnel_metrics.append({
+                    'step': 'Completed Onboarding',
+                    'users': users_onboarded,
+                    'conversion_rate': (users_onboarded / users_started * 100) if users_started > 0 else 0
+                })
+                
+                # Step 3: Users who adopted features
+                users_adopted_features = df_feature_adoption_filtered['user_id'].nunique()
+                funnel_metrics.append({
+                    'step': 'Adopted Features',
+                    'users': users_adopted_features,
+                    'conversion_rate': (users_adopted_features / users_started * 100) if users_started > 0 else 0
+                })
+                
+                # Step 4: Users who completed workflows
+                users_completed_workflows = df_workflow_completion_filtered['user_id'].nunique()
+                funnel_metrics.append({
+                    'step': 'Completed Workflows',
+                    'users': users_completed_workflows,
+                    'conversion_rate': (users_completed_workflows / users_started * 100) if users_started > 0 else 0
+                })
+                
+                # Display funnel table
+                funnel_df = pd.DataFrame(funnel_metrics)
+                st.dataframe(funnel_df, use_container_width=True)
+                
+                # Funnel visualization
+                fig_funnel = px.funnel(funnel_df, x='users', y='step', 
+                                     title='User Conversion Funnel')
+                st.plotly_chart(fig_funnel, use_container_width=True)
+                
+                # Conversion rate chart
+                fig_conversion = px.bar(funnel_df, x='step', y='conversion_rate',
+                                      title='Conversion Rates by Step')
+                fig_conversion.update_yaxes(title='Conversion Rate (%)')
+                fig_conversion.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_conversion, use_container_width=True)
+                
+            except FileNotFoundError as e:
+                st.warning("Funnel CSV files not found. Showing basic user progression analysis.")
+                
+                # Basic funnel using feature usage data
+                user_progression = df_filtered.groupby('user_id').agg({
+                    'feature': 'nunique',
+                    'event_count': 'sum',
+                    'window_start': ['min', 'max']
+                }).reset_index()
+                
+                user_progression.columns = ['user_id', 'unique_features', 'total_events', 'first_activity', 'last_activity']
+                user_progression['session_duration'] = (user_progression['last_activity'] - user_progression['first_activity']).dt.total_seconds() / 3600
+                
+                # Create simple funnel based on engagement levels
+                basic_funnel = []
+                total_users = user_progression['user_id'].nunique()
+                
+                # Light users (1-2 features)
+                light_users = len(user_progression[user_progression['unique_features'] <= 2])
+                basic_funnel.append({
+                    'step': 'Light Usage (1-2 features)',
+                    'users': light_users,
+                    'conversion_rate': (light_users / total_users * 100) if total_users > 0 else 0
+                })
+                
+                # Medium users (3-5 features)
+                medium_users = len(user_progression[
+                    (user_progression['unique_features'] >= 3) & 
+                    (user_progression['unique_features'] <= 5)
+                ])
+                basic_funnel.append({
+                    'step': 'Medium Usage (3-5 features)',
+                    'users': medium_users,
+                    'conversion_rate': (medium_users / total_users * 100) if total_users > 0 else 0
+                })
+                
+                # Heavy users (6+ features)
+                heavy_users = len(user_progression[user_progression['unique_features'] >= 6])
+                basic_funnel.append({
+                    'step': 'Heavy Usage (6+ features)',
+                    'users': heavy_users,
+                    'conversion_rate': (heavy_users / total_users * 100) if total_users > 0 else 0
+                })
+                
+                basic_funnel_df = pd.DataFrame(basic_funnel)
+                st.dataframe(basic_funnel_df, use_container_width=True)
+                
+                # Basic funnel chart
+                fig_basic_funnel = px.bar(basic_funnel_df, x='step', y='users',
+                                        title='User Engagement Levels')
+                fig_basic_funnel.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_basic_funnel, use_container_width=True)
+                
+        except Exception as e:
+            st.error(f"Error creating funnel analysis: {e}")
+            st.info("Unable to generate funnel analysis with available data.")
 
 # Footer
 st.sidebar.markdown("---")
