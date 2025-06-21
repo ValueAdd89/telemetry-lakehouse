@@ -22,7 +22,8 @@ def load_data_from_csv():
     """
     Fallback: Load data from original CSV files
     """
-    base_path = Path(__file__).parent.parent / "data" 
+    # Fixed path to point to spark_processed directory
+    base_path = Path(__file__).parent.parent / "data" / "spark_processed"
 
     try:
         # Load original CSV files as fallback
@@ -69,7 +70,7 @@ def load_data_from_csv():
         time_aggregations['month_start'] = time_aggregations['window_start'].dt.to_period('M').dt.start_time
 
         st.success(f"✅ Loaded {len(df_feature_events):,} feature events from CSV files")
-        st.info("📊 Data sourced from: Original CSV files (dbt marts not available)")
+        st.info("📊 Data sourced from: Spark processed CSV files (dbt marts not available)")
         
         return (
             df_all_data_merged,
@@ -82,7 +83,38 @@ def load_data_from_csv():
         )
         
     except Exception as e:
-        st.error(f"Error loading CSV files: {e}")
+        st.error(f"Error loading CSV files from {base_path}: {e}")
+        
+        # Additional debugging info
+        st.error("**Debug Info:**")
+        st.write(f"Looking for files in: {base_path}")
+        if base_path.exists():
+            st.write("Directory exists. Files found:")
+            for file in base_path.glob("*.csv"):
+                st.write(f"  - {file.name}")
+        else:
+            st.write("Directory does not exist!")
+            
+        # Try alternative paths
+        alt_paths = [
+            Path(__file__).parent / "data" / "spark_processed",
+            Path("data") / "spark_processed",
+            Path("../data/spark_processed"),
+        ]
+        
+        st.write("\n**Trying alternative paths:**")
+        for alt_path in alt_paths:
+            if alt_path.exists():
+                st.write(f"✅ Found: {alt_path}")
+                csv_files = list(alt_path.glob("*.csv"))
+                if csv_files:
+                    st.write("  CSV files:")
+                    for file in csv_files[:5]:  # Show first 5
+                        st.write(f"    - {file.name}")
+                break
+            else:
+                st.write(f"❌ Not found: {alt_path}")
+        
         st.stop()
 
 @st.cache_data
@@ -160,7 +192,7 @@ def load_data():
         return dbt_data
     
     # Fallback to CSV files
-    st.warning("🔄 dbt outputs not found. Falling back to original CSV files.")
+    st.warning("🔄 dbt outputs not found. Falling back to Spark processed CSV files.")
     st.info("""
     **To use dbt marts:**
     1. Navigate to dbt directory: `cd dbt`
@@ -181,15 +213,12 @@ except Exception as e:
     Error: {str(e)}
     
     **Troubleshooting Steps:**
-    1. Check that data files exist in `data/` folder
+    1. Check that data files exist in `data/spark_processed/` folder
     2. If using dbt: Run `cd dbt && dbt run` 
     3. Ensure CSV files have correct column names
     4. Refresh the page
     """)
     st.stop()
-
-# --- Rest of dashboard code continues... ---
-# (Sidebar filters, tabs, etc. remain the same)
 
 # --- Sidebar Filters ---
 st.sidebar.header("Filter Data")
@@ -330,7 +359,113 @@ with tab1:
     else:
         st.info("No event data over time for the current selection.")
 
-# Continue with other tabs...
+# --- Tab 2: Feature Analysis ---
+with tab2:
+    st.header("Feature Usage Analysis")
+    
+    # Feature usage over time
+    st.subheader("Feature Usage Trends")
+    
+    df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
+    feature_time = df_filtered.groupby(['time_group', 'feature'])['event_count'].sum().reset_index()
+    
+    if not feature_time.empty:
+        # Show top features only for readability
+        top_features_list = df_filtered.groupby('feature')['event_count'].sum().nlargest(top_n_features).index.tolist()
+        feature_time_filtered = feature_time[feature_time['feature'].isin(top_features_list)]
+        
+        fig_feature_trends = px.line(feature_time_filtered, x="time_group", y="event_count", 
+                                   color="feature", title=f"Top {top_n_features} Feature Usage Over Time")
+        st.plotly_chart(fig_feature_trends, use_container_width=True)
+    
+    # Feature distribution
+    st.subheader("Feature Usage Distribution")
+    feature_summary = df_filtered.groupby('feature')['event_count'].sum().reset_index()
+    feature_summary = feature_summary.sort_values('event_count', ascending=False).head(top_n_features)
+    
+    if not feature_summary.empty:
+        fig_feature_bar = px.bar(feature_summary, x="feature", y="event_count", 
+                               title=f"Top {top_n_features} Features by Usage")
+        fig_feature_bar.update_xaxes(tickangle=45)
+        st.plotly_chart(fig_feature_bar, use_container_width=True)
+
+# --- Tab 3: User Insights ---
+with tab3:
+    st.header("User Behavior Analysis")
+    
+    # User activity distribution
+    st.subheader("User Activity Distribution")
+    user_activity = df_filtered.groupby('user_id')['event_count'].sum().reset_index()
+    user_activity.columns = ['user_id', 'total_events']
+    
+    if not user_activity.empty:
+        fig_user_dist = px.histogram(user_activity, x="total_events", nbins=20,
+                                   title="Distribution of User Activity Levels")
+        st.plotly_chart(fig_user_dist, use_container_width=True)
+    
+    # Top users
+    st.subheader("Most Active Users")
+    top_users = user_activity.nlargest(10, 'total_events')
+    
+    if not top_users.empty:
+        fig_top_users = px.bar(top_users, x="user_id", y="total_events",
+                             title="Top 10 Most Active Users")
+        st.plotly_chart(fig_top_users, use_container_width=True)
+
+# --- Tab 4: Top Features ---
+with tab4:
+    st.header("Feature Rankings")
+    
+    if not df_top_features.empty and 'rank' in df_top_features.columns:
+        # Use pre-calculated rankings
+        top_features_display = df_top_features.head(top_n_features)
+        st.dataframe(top_features_display, use_container_width=True)
+    else:
+        # Calculate rankings
+        feature_rankings = df_filtered.groupby('feature').agg({
+            'event_count': 'sum',
+            'user_id': 'nunique'
+        }).reset_index()
+        feature_rankings.columns = ['feature', 'total_events', 'unique_users']
+        feature_rankings = feature_rankings.sort_values('total_events', ascending=False)
+        feature_rankings['rank'] = range(1, len(feature_rankings) + 1)
+        
+        st.dataframe(feature_rankings.head(top_n_features), use_container_width=True)
+
+# --- Tab 5: Session Analysis ---
+with tab5:
+    st.header("Session Analytics")
+    
+    if 'session_duration_hours' in df_sessions_filtered.columns and not df_sessions_filtered.empty:
+        # Session duration distribution
+        st.subheader("Session Duration Distribution")
+        fig_session_dist = px.histogram(df_sessions_filtered, x="session_duration_hours", nbins=20,
+                                      title="Distribution of Session Durations")
+        st.plotly_chart(fig_session_dist, use_container_width=True)
+        
+        # Session metrics
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Avg Session Duration", f"{df_sessions_filtered['session_duration_hours'].mean():.1f}h")
+        col2.metric("Median Session Duration", f"{df_sessions_filtered['session_duration_hours'].median():.1f}h")
+        col3.metric("Total Sessions", f"{len(df_sessions_filtered):,}")
+    else:
+        st.info("Session data not available with current data source.")
+
+# --- Tab 6: Funnel Analysis ---
+with tab6:
+    st.header("Conversion Funnel Analysis")
+    
+    if not df_funnel_analysis.empty:
+        st.dataframe(df_funnel_analysis, use_container_width=True)
+    else:
+        st.info("Funnel analysis data not available. This requires dbt mart models to be generated.")
+        st.markdown("""
+        **To enable funnel analysis:**
+        1. Run `cd dbt && dbt run` to generate mart models
+        2. Refresh this dashboard
+        """)
+
+# Footer
 st.sidebar.markdown("---")
 st.sidebar.markdown("**🎯 Powered by Modern Data Stack**")
-st.sidebar.caption("CSV → dbt → Streamlit Pipeline")
+st.sidebar.caption("CSV → Spark → dbt → Streamlit Pipeline")
