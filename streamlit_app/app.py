@@ -17,114 +17,29 @@ st.markdown("Use this dashboard to explore product feature usage, user behavior,
 st.markdown("---")
 
 # --- Data Loading (Cached for performance) ---
-@st.cache_data
+# streamlit_app/dashboard.py - Updated load_data function
+@st.cache_data  
 def load_data():
-    """
-    Load data from dbt marts (analytics-ready datasets)
-    This replaces direct CSV consumption with proper data modeling layer
-    """
-    # Path to dbt-generated mart models
-    dbt_marts_path = Path(__file__).parent.parent / "dbt" / "target" / "run" / "telemetry_lakehouse" / "models" / "marts"
+    """Load data from dbt outputs (Parquet format)"""
+    dbt_target_path = Path(__file__).parent.parent / "dbt" / "target" / "run" / "telemetry_lakehouse" / "models" / "marts"
     
     try:
-        # === Load Mart Models (Analytics-Ready Data) ===
+        # Read Parquet files instead of CSV (better performance)
+        df_feature_events = pd.read_parquet(dbt_target_path / "mart_feature_usage_hourly.parquet")
+        df_users = pd.read_parquet(dbt_target_path / "mart_user_profiles.parquet")
+        df_user_sessions = pd.read_parquet(dbt_target_path / "mart_user_sessions.parquet")
+        df_top_features = pd.read_parquet(dbt_target_path / "mart_top_features.parquet")
         
-        # Core feature usage data (replaces feature_usage_hourly_sample.csv)
-        df_feature_events = pd.read_csv(
-            dbt_marts_path / "mart_feature_usage_hourly.csv", 
-            parse_dates=["window_start"]
-        )
+        # Parse dates
+        df_feature_events['window_start'] = pd.to_datetime(df_feature_events['window_start'])
         
-        # User profiles with enriched metrics (replaces users.csv)
-        df_users = pd.read_csv(dbt_marts_path / "mart_user_profiles.csv")
+        return df_feature_events, df_users, df_user_sessions, df_top_features
         
-        # Pre-calculated user session analytics (replaces on-the-fly calculations)
-        df_user_sessions = pd.read_csv(
-            dbt_marts_path / "mart_user_sessions.csv",
-            parse_dates=["session_start", "session_end"]
-        )
-        
-        # Top features with rankings (replaces dashboard calculations)
-        df_top_features = pd.read_csv(dbt_marts_path / "mart_top_features.csv")
-        
-        # Funnel analysis (replaces individual funnel CSVs)
-        df_funnel_analysis = pd.read_csv(
-            dbt_marts_path / "mart_funnel_analysis.csv",
-            parse_dates=["event_timestamp"]
-        )
-        
-        # Dashboard overview KPIs (pre-calculated metrics)
-        df_overview_kpis = pd.read_csv(dbt_marts_path / "mart_dashboard_overview.csv")
-        
-        # Time-based aggregations (replaces dashboard groupby operations)
-        df_time_aggregations = pd.read_csv(
-            dbt_marts_path / "mart_feature_usage_by_time.csv",
-            parse_dates=["hour_start", "day_start", "week_start", "month_start"]
-        )
-        
-        # --- Data Quality Validation ---
-        if df_feature_events.empty:
-            st.error("No feature events data found. Please run 'dbt run' to generate mart models.")
-            st.stop()
-            
-        if df_users.empty:
-            st.error("No user data found. Please run 'dbt run' to generate mart models.")
-            st.stop()
-        
-        # --- Data Processing for Dashboard ---
-        # Ensure datetime columns are properly parsed
-        df_feature_events['window_start'] = pd.to_datetime(df_feature_events['window_start'], errors='coerce')
-        df_feature_events.dropna(subset=['window_start'], inplace=True)
-        
-        # Merge feature events with user profiles for enriched analysis
-        df_all_data_merged = pd.merge(df_feature_events, df_users, on='user_id', how='left')
-        
-        st.success(f"✅ Loaded {len(df_feature_events):,} feature events from dbt marts")
-        st.info("📊 Data sourced from: CSV → dbt staging → dbt intermediate → dbt marts")
-        
-        return (
-            df_all_data_merged, 
-            df_users, 
-            df_user_sessions, 
-            df_top_features,
-            df_funnel_analysis,
-            df_overview_kpis,
-            df_time_aggregations
-        )
-        
-    except FileNotFoundError as e:
-        st.error(f"""
-        🚨 **dbt Mart Models Not Found**
-        
-        Required file missing: {e.filename}
-        
-        **To fix this:**
-        1. Navigate to the dbt directory: `cd dbt`
-        2. Run dbt to generate marts: `dbt run`
-        3. Refresh this dashboard
-        
-        **Expected mart models:**
-        - mart_feature_usage_hourly.csv
-        - mart_user_profiles.csv  
-        - mart_user_sessions.csv
-        - mart_top_features.csv
-        - mart_funnel_analysis.csv
-        - mart_dashboard_overview.csv
-        """)
-        st.stop()
-        
-    except Exception as e:
-        st.error(f"""
-        🚨 **Error Loading dbt Mart Data**
-        
-        Error: {e}
-        
-        **Troubleshooting:**
-        1. Ensure dbt models have run successfully: `dbt run`
-        2. Check that mart models exist in: `dbt/target/run/telemetry_lakehouse/models/marts/`
-        3. Verify CSV format is correct
-        4. Check for data quality issues in source CSVs
-        """)
+    except FileNotFoundError:
+        # Fallback: Try to read from database if available
+        return load_from_database()
+    except:
+        st.error("dbt models not found. Run 'cd dbt && dbt run' first.")
         st.stop()
 
 # === Alternative: Database Connection (for Production) ===
