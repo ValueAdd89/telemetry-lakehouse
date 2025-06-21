@@ -228,5 +228,71 @@ user_0069,Feature Click,2024-01-23 08:00:00,chart_create,2
 user_0069,Feature Trial,2024-01-25 08:00:00,chart_create,3
 user_0069,Feature Regular Use,2024-01-28 08:00:00,chart_create,4
 user_0070,Feature Discovery,2024-01-09 08:00:00,chart_create,1
-user_0070,Feature Click,2024-01-10 08:00:00,chart_create,2
 user_0070,Feature Trial,2024-01-12 08:00:00,chart_create,3
+user_0071,Feature Discovery,2024-01-01 10:00:00,chart_create,1
+user_0071,Feature Click,2024-01-02 12:00:00,chart_create,2
+user_0071,Feature Trial,2024-01-04 14:00:00,chart_create,3
+user_0071,Feature Regular Use,2024-01-07 16:00:00,chart_create,4
+user_0072,Feature Discovery,2024-01-02 11:00:00,chart_create,1
+user_0072,Feature Click,2024-01-03 13:00:00,chart_create,2
+user_0073,Feature Discovery,2024-01-03 12:00:00,chart_create,1
+user_0073,Feature Click,2024-01-04 14:00:00,chart_create,2
+user_0073,Feature Trial,2024-01-06 16:00:00,chart_create,3
+user_0074,Feature Discovery,2024-01-04 09:00:00,chart_create,1
+user_0074,Feature Click,2024-01-05 11:00:00,chart_create,2
+user_0074,Feature Trial,2024-01-07 13:00:00,chart_create,3
+user_0074,Feature Regular Use,2024-01-10 15:00:00,chart_create,4
+user_0074,Feature Mastery,2024-01-15 17:00:00,chart_create,5
+user_0075,Feature Discovery,2024-01-05 10:00:00,chart_create,1
+user_0075,Feature Click,2024-01-06 12:00:00,chart_create,2
+user_0076,Feature Discovery,2024-01-06 11:00:00,chart_create,1
+user_0076,Feature Click,2024-01-07 13:00:00,chart_create,2
+user_0076,Feature Trial,2024-01-09 15:00:00,chart_create,3
+user_0077,Feature Discovery,2024-01-07 08:00:00,chart_create,1
+user_0077,Feature Click,2024-01-08 10:00:00,chart_create,2
+user_0077,Feature Trial,2024-01-10 12:00:00,chart_create,3
+user_0077,Feature Regular Use,2024-01-13 14:00:00,chart_create,4
+user_0078,Feature Discovery,2024-01-08 09:00:00,chart_create,1
+user_0078,Feature Click,2024-01-09 11:00:00,chart_create,2
+user_0078,Feature Trial,2024-01-11 13:00:00,chart_create,3
+user_0078,Feature Regular Use,2024-01-14 15:00:00,chart_create,4
+user_0078,Feature Mastery,2024-01-19 17:00:00,chart_create,5
+user_0078,Feature Advocacy,2024-01-26 19:00:00,chart_create,6
+user_0079,Feature Discovery,2024-01-09 10:00:00,chart_create,1
+user_0079,Feature Click,2024-01-10 12:00:00,chart_create,2
+user_0080,Feature Discovery,2024-01-10 11:00:00,chart_create,1
+user_0080,Feature Click,2024-01-11 13:00:00,chart_create,2
+user_0080,Feature Trial,2024-01-13 15:00:00,chart_create,3
+user_0081,Feature Discovery,2024-01-11 08:00:00,chart_create,1
+user_0081,Feature Click,2024-01-12 10:00:00,chart_create,2
+user_0081,Feature Trial,2024-01-14 12:00:00,chart_create,3
+user_0081,Feature Regular Use,2024-01-17 14:00:00,chart_create,4
+user_0082,Feature Discovery,2024-01-12 09:00:00,chart_create,1
+user_0082,Feature Click,2024-01-13 11:00:00,chart_create,2
+user_0083,Feature Discovery,2024-01-13 10:00:00,chart_create,1
+user_0083,Feature Click,2024-01-14 12:00:00,chart_create,2
+user_0083,Feature Trial,2024-01-16 14:00:00,chart_create,3
+user_0084,Feature Discovery,2024-01-14 11:00:00,chart_create,1
+user_0084,Feature Click,2024-01-15 13:00:00,chart_create,2
+user_0084,Feature Trial,2024-01-17 15:00:00,chart_create,3
+user_0084,Feature Regular Use,2024-01-20 17:00:00,chart_create,4
+user_0084,Feature Mastery,2024-01-25 19:00:00,chart_create,5
+user_0085,Feature Discovery,2024-01-15 08:00:00,chart_create,1
+user_0085,Feature Click,2024-01-16 10:00:00,chart_create,2
+user_0085,Feature Trial,2024-01-18 12:00:00,chart_create,3
+user_0086,Feature Discovery,2024-01-16 09:00:00,chart_create,1
+user_0086,Feature Click,2024-01-17 11:00:00,chart_create,2
+user_0087,Feature Discovery,2024-01-17 10:00:00,chart_create,1
+user_0087,Feature Click,2024-01-18 12:00:00,chart_create,2
+user_0087,Feature Trial,2024-01-20 14:00:00,chart_create,3
+user_0087,Feature Regular Use,2024-01-23 16:00:00,chart_create,4
+user_0088,Feature Discovery,2024-01-18 11:00:00,chart_create,1
+user_0088,Feature Click,2024-01-19 13:00:00,chart_create,2
+user_0088,Feature Trial,2024-01-21 15:00:00,chart_create,3
+user_0089,Feature Discovery,2024-01-19 08:00:00,chart_create,1
+user_0089,Feature Click,2024-01-20 10:00:00,chart_create,2
+user_0089,Feature Trial,2024-01-22 12:00:00,chart_create,3
+user_0089,Feature Regular Use,2024-01-25 14:00:00,chart_create,4
+user_0089,Feature Mastery,2024-01-30 16:00:00,chart_create,5
+user_0090,Feature Discovery,2024-01-20 09:00:00,chart_create,1
+user_0090,Feature Click,2024-01-21 11:00:00,chart_create,2
