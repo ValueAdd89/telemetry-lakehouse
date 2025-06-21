@@ -100,21 +100,24 @@ time_granularity = st.sidebar.selectbox(
     options=["Daily", "Weekly", "Monthly"]
 )
 
-# Feature Multiselect
-all_features = df_all_data['feature'].unique().tolist()
-selected_features = st.sidebar.selectbox("Select Feature", options=['All'] + all_features, index=0) # Changed to selectbox
-if selected_features == 'All':
-    features_to_filter = all_features
+# --- FIX: Ensure selected_feature is always defined ---
+if not df_all_data.empty and 'feature' in df_all_data.columns:
+    all_features_options = ['All'] + sorted(df_all_data['feature'].unique().tolist())
+    selected_feature = st.sidebar.selectbox("Select Feature", options=all_features_options, index=0)
 else:
-    features_to_filter = [selected_features]
+    # Fallback if 'feature' column is missing or df_all_data is empty
+    st.warning("Feature data not available for selection. Some dashboard sections may be limited.")
+    selected_feature = 'All' # Default to 'All' to avoid NameError
 
-# User Multiselect
-all_users = df_all_data['user_id'].unique().tolist()
-selected_user_single = st.sidebar.selectbox("Select User", options=['All'] + all_users, index=0) # Changed to selectbox
-if selected_user_single == 'All':
-    users_to_filter = all_users
+
+# --- FIX: Ensure selected_user_single is always defined ---
+if not df_all_data.empty and 'user_id' in df_all_data.columns:
+    all_users_options = ['All'] + sorted(df_all_data['user_id'].unique().tolist())
+    selected_user_single = st.sidebar.selectbox("Select User", options=all_users_options, index=0)
 else:
-    users_to_filter = [selected_user_single]
+    # Fallback if 'user_id' data is missing or df_all_data is empty
+    st.warning("User data not available for selection. Some dashboard sections may be limited.")
+    selected_user_single = 'All' # Default to 'All' to avoid NameError
 
 # Top N Features Slider
 top_n_features = st.sidebar.slider("Show Top N Features", min_value=5, max_value=20, value=10)
@@ -123,17 +126,24 @@ top_n_features = st.sidebar.slider("Show Top N Features", min_value=5, max_value
 # --- Apply Global Filters to DataFrames ---
 df_filtered = df_all_data[
     (df_all_data['window_start'] >= start_date) &
-    (df_all_data['window_start'] < end_date) &
-    (df_all_data['feature'].isin(features_to_filter)) &
-    (df_all_data['user_id'].isin(users_to_filter))
+    (df_all_data['window_start'] < end_date) 
 ].copy() 
+
+# Apply Feature Filter (if not 'All')
+if selected_feature != 'All':
+    df_filtered = df_filtered[df_filtered['feature'] == selected_feature].copy()
+
+# Apply User Filter (if not 'All')
+if selected_user_single != 'All': # Use selected_user_single here
+    df_filtered = df_filtered[df_filtered['user_id'] == selected_user_single].copy()
+
 
 # Filter session_funnel based on selected users and dates
 filtered_session_funnel = session_funnel_orig[
     (session_funnel_orig['session_start'] >= start_date) &
     (session_funnel_orig['session_start'] < end_date)
 ].copy()
-if selected_user_single != 'All': # Only filter session_funnel by user if a specific user is selected
+if selected_user_single != 'All': 
     filtered_session_funnel = filtered_session_funnel[filtered_session_funnel['user_id'] == selected_user_single].copy()
 
 
@@ -142,20 +152,21 @@ def filter_funnel_by_user(df, user_id):
     if user_id == 'All':
         return df
     else:
-        return df[df['user_id'] == user_id].copy()
+        # The .isin() method expects an iterable, so wrap user_id in a list.
+        # However, as it's a single select, direct comparison is also valid if df['user_id'] is object/str
+        return df[df['user_id'] == user_id].copy() 
 
 # Prepare filtered funnel datasets for the Funnel Analysis tab
-# These are filtered by date and selected user, but NOT by 'feature' selection
 filtered_funnels = {
     "Onboarding Funnel": filter_funnel_by_user(
         funnel_onboarding_orig[(funnel_onboarding_orig['timestamp'] >= start_date) & (funnel_onboarding_orig['timestamp'] < end_date)], 
-        selected_user_single),
+        selected_user_single), # Use selected_user_single
     "Feature Adoption Funnel": filter_funnel_by_user(
         funnel_feature_adoption_orig[(funnel_feature_adoption_orig['timestamp'] >= start_date) & (funnel_feature_adoption_orig['timestamp'] < end_date)], 
-        selected_user_single),
+        selected_user_single), # Use selected_user_single
     "Workflow Completion Funnel": filter_funnel_by_user(
         funnel_workflow_completion_orig[(funnel_workflow_completion_orig['timestamp'] >= start_date) & (funnel_workflow_completion_orig['timestamp'] < end_date)], 
-        selected_user_single)
+        selected_user_single) # Use selected_user_single
 }
 
 
@@ -198,7 +209,6 @@ with tab1:
         freq = 'W'
         df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
     else: # Monthly
-        # Use 'M' for period and then explicitly get start_time
         df_filtered['time_group'] = df_filtered['window_start'].dt.to_period('M').dt.start_time
     
     events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
@@ -238,7 +248,7 @@ with tab2:
             single_feature_time_agg.columns = ['Date', 'event_count']
 
             fig_time = px.line(single_feature_time_agg, x="Date", y="event_count",
-                            title=f"'{selected_feature}' Usage Over Time ({time_granularity})") # Added quotes for clarity
+                            title=f"'{selected_feature}' Usage Over Time ({time_granularity})") 
             st.plotly_chart(fig_time, use_container_width=True)
 
             st.markdown("##### Raw Data for Selected Feature")
@@ -269,7 +279,7 @@ with tab3:
             user_total_events = user_total_events.sort_values('event_count', ascending=False)
             
             # Show top N users by event count
-            top_users_by_events = user_total_events.head(top_n_features) # Using top_n_features slider for users too
+            top_users_by_events = user_total_events.head(top_n_features) 
             
             if not top_users_by_events.empty:
                 st.markdown(f"##### Top {top_n_features} Users by Total Events")
