@@ -1,0 +1,343 @@
+user_id,funnel_step,timestamp,step_order
+user_0001,Landing Page Visit,2024-01-01 12:00:00,1
+user_0001,Sign Up Form,2024-01-01 12:15:00,2
+user_0001,Email Verification,2024-01-01 12:35:00,3
+user_0001,Profile Setup,2024-01-01 13:15:00,4
+user_0001,Tutorial Start,2024-01-01 14:25:00,5
+user_0001,First Feature Use,2024-01-01 15:45:00,6
+user_0001,Onboarding Complete,2024-01-01 16:30:00,7
+user_0002,Landing Page Visit,2024-01-01 14:00:00,1
+user_0002,Sign Up Form,2024-01-01 14:20:00,2
+user_0002,Email Verification,2024-01-01 14:45:00,3
+user_0002,Profile Setup,2024-01-01 15:30:00,4
+user_0003,Landing Page Visit,2024-01-01 16:00:00,1
+user_0003,Sign Up Form,2024-01-01 16:25:00,2
+user_0004,Landing Page Visit,2024-01-01 18:00:00,1
+user_0004,Sign Up Form,2024-01-01 18:15:00,2
+user_0004,Email Verification,2024-01-01 18:40:00,3
+user_0004,Profile Setup,2024-01-01 19:20:00,4
+user_0004,Tutorial Start,2024-01-01 20:10:00,5
+user_0005,Landing Page Visit,2024-01-02 09:00:00,1
+user_0005,Sign Up Form,2024-01-02 09:30:00,2
+user_0005,Email Verification,2024-01-02 10:00:00,3
+user_0005,Profile Setup,2024-01-02 10:45:00,4
+user_0005,Tutorial Start,2024-01-02 11:30:00,5
+user_0005,First Feature Use,2024-01-02 12:45:00,6
+user_0005,Onboarding Complete,2024-01-02 13:20:00,7
+user_0006,Landing Page Visit,2024-01-02 11:00:00,1
+user_0006,Sign Up Form,2024-01-02 11:25:00,2
+user_0006,Email Verification,2024-01-02 11:50:00,3
+user_0007,Landing Page Visit,2024-01-02 13:00:00,1
+user_0007,Sign Up Form,2024-01-02 13:15:00,2
+user_0008,Landing Page Visit,2024-01-02 15:00:00,1
+user_0008,Sign Up Form,2024-01-02 15:20:00,2
+user_0008,Email Verification,2024-01-02 15:45:00,3
+user_0008,Profile Setup,2024-01-02 16:25:00,4
+user_0008,Tutorial Start,2024-01-02 17:15:00,5
+user_0008,First Feature Use,2024-01-02 18:30:00,6
+user_0009,Landing Page Visit,2024-01-03 08:00:00,1
+user_0009,Sign Up Form,2024-01-03 08:35:00,2
+user_0009,Email Verification,2024-01-03 09:10:00,3
+user_0009,Profile Setup,2024-01-03 09:55:00,4
+user_0010,Landing Page Visit,2024-01-03 10:00:00,1
+user_0010,Sign Up Form,2024-01-03 10:20:00,2
+user_0010,Email Verification,2024-01-03 10:45:00,3
+user_0010,Profile Setup,2024-01-03 11:30:00,4
+user_0010,Tutorial Start,2024-01-03 12:20:00,5
+user_0010,First Feature Use,2024-01-03 13:35:00,6
+user_0010,Onboarding Complete,2024-01-03 14:10:00,7
+user_0011,Landing Page Visit,2024-01-03 12:00:00,1
+user_0011,Sign Up Form,2024-01-03 12:25:00,2
+user_0012,Landing Page Visit,2024-01-03 14:00:00,1
+user_0012,Sign Up Form,2024-01-03 14:30:00,2
+user_0012,Email Verification,2024-01-03 15:00:00,3
+user_0013,Landing Page Visit,2024-01-03 16:00:00,1
+user_0013,Sign Up Form,2024-01-03 16:15:00,2
+user_0013,Email Verification,2024-01-03 16:40:00,3
+user_0013,Profile Setup,2024-01-03 17:25:00,4
+user_0013,Tutorial Start,2024-01-03 18:15:00,5
+user_0014,Landing Page Visit,2024-01-04 09:00:00,1
+user_0014,Sign Up Form,2024-01-04 09:25:00,2
+user_0014,Email Verification,2024-01-04 09:50:00,3
+user_0014,Profile Setup,2024-01-04 10:35:00,4
+user_0015,Landing Page Visit,2024-01-04 11:00:00,1
+user_0015,Sign Up Form,2024-01-04 11:30:00,2
+user_0015,Email Verification,2024-01-04 12:00:00,3
+user_0015,Profile Setup,2024-01-04 12:45:00,4
+user_0015,Tutorial Start,2024-01-04 13:35:00,5
+user_0015,First Feature Use,2024-01-04 14:50:00,6
+user_0015,Onboarding Complete,2024-01-04 15:25:00,7
+user_0016,Landing Page Visit,2024-01-04 13:00:00,1
+user_0016,Sign Up Form,2024-01-04 13:20:00,2
+user_0017,Landing Page Visit,2024-01-04 15:00:00,1
+user_0017,Sign Up Form,2024-01-04 15:35:00,2
+user_0017,Email Verification,2024-01-04 16:10:00,3
+user_0018,Landing Page Visit,2024-01-04 17:00:00,1
+user_0018,Sign Up Form,2024-01-04 17:15:00,2
+user_0018,Email Verification,2024-01-04 17:40:00,3
+user_0018,Profile Setup,2024-01-04 18:25:00,4
+user_0019,Landing Page Visit,2024-01-05 08:00:00,1
+user_0019,Sign Up Form,2024-01-05 08:40:00,2
+user_0019,Email Verification,2024-01-05 09:15:00,3
+user_0019,Profile Setup,2024-01-05 10:00:00,4
+user_0019,Tutorial Start,2024-01-05 10:50:00,5
+user_0020,Landing Page Visit,2024-01-05 10:00:00,1
+user_0020,Sign Up Form,2024-01-05 10:25:00,2
+user_0020,Email Verification,2024-01-05 10:50:00,3
+user_0021,Landing Page Visit,2024-01-05 12:00:00,1
+user_0021,Sign Up Form,2024-01-05 12:30:00,2
+user_0021,Email Verification,2024-01-05 13:00:00,3
+user_0021,Profile Setup,2024-01-05 13:45:00,4
+user_0021,Tutorial Start,2024-01-05 14:35:00,5
+user_0021,First Feature Use,2024-01-05 15:50:00,6
+user_0022,Landing Page Visit,2024-01-05 14:00:00,1
+user_0022,Sign Up Form,2024-01-05 14:20:00,2
+user_0023,Landing Page Visit,2024-01-05 16:00:00,1
+user_0023,Sign Up Form,2024-01-05 16:35:00,2
+user_0023,Email Verification,2024-01-05 17:10:00,3
+user_0024,Landing Page Visit,2024-01-06 09:00:00,1
+user_0024,Sign Up Form,2024-01-06 09:15:00,2
+user_0024,Email Verification,2024-01-06 09:40:00,3
+user_0024,Profile Setup,2024-01-06 10:25:00,4
+user_0025,Landing Page Visit,2024-01-06 11:00:00,1
+user_0025,Sign Up Form,2024-01-06 11:35:00,2
+user_0025,Email Verification,2024-01-06 12:10:00,3
+user_0025,Profile Setup,2024-01-06 12:55:00,4
+user_0025,Tutorial Start,2024-01-06 13:45:00,5
+user_0025,First Feature Use,2024-01-06 15:00:00,6
+user_0025,Onboarding Complete,2024-01-06 15:35:00,7
+user_0026,Landing Page Visit,2024-01-06 13:00:00,1
+user_0026,Sign Up Form,2024-01-06 13:25:00,2
+user_0027,Landing Page Visit,2024-01-06 15:00:00,1
+user_0027,Sign Up Form,2024-01-06 15:20:00,2
+user_0027,Email Verification,2024-01-06 15:45:00,3
+user_0028,Landing Page Visit,2024-01-06 17:00:00,1
+user_0028,Sign Up Form,2024-01-06 17:30:00,2
+user_0028,Email Verification,2024-01-06 18:00:00,3
+user_0028,Profile Setup,2024-01-06 18:45:00,4
+user_0028,Tutorial Start,2024-01-06 19:35:00,5
+user_0029,Landing Page Visit,2024-01-07 08:00:00,1
+user_0029,Sign Up Form,2024-01-07 08:25:00,2
+user_0029,Email Verification,2024-01-07 08:50:00,3
+user_0029,Profile Setup,2024-01-07 09:35:00,4
+user_0030,Landing Page Visit,2024-01-07 10:00:00,1
+user_0030,Sign Up Form,2024-01-07 10:40:00,2
+user_0030,Email Verification,2024-01-07 11:15:00,3
+user_0030,Profile Setup,2024-01-07 12:00:00,4
+user_0030,Onboarding Complete,2024-01-07 14:40:00,7
+user_0031,Landing Page Visit,2024-01-08 09:00:00,1
+user_0031,Sign Up Form,2024-01-08 09:30:00,2
+user_0031,Email Verification,2024-01-08 10:00:00,3
+user_0032,Landing Page Visit,2024-01-08 11:00:00,1
+user_0032,Sign Up Form,2024-01-08 11:25:00,2
+user_0033,Landing Page Visit,2024-01-08 13:00:00,1
+user_0033,Sign Up Form,2024-01-08 13:35:00,2
+user_0033,Email Verification,2024-01-08 14:10:00,3
+user_0033,Profile Setup,2024-01-08 14:55:00,4
+user_0034,Landing Page Visit,2024-01-08 15:00:00,1
+user_0034,Sign Up Form,2024-01-08 15:20:00,2
+user_0034,Email Verification,2024-01-08 15:45:00,3
+user_0034,Profile Setup,2024-01-08 16:30:00,4
+user_0034,Tutorial Start,2024-01-08 17:20:00,5
+user_0035,Landing Page Visit,2024-01-09 08:00:00,1
+user_0035,Sign Up Form,2024-01-09 08:40:00,2
+user_0035,Email Verification,2024-01-09 09:15:00,3
+user_0035,Profile Setup,2024-01-09 10:00:00,4
+user_0035,Tutorial Start,2024-01-09 10:50:00,5
+user_0035,First Feature Use,2024-01-09 12:05:00,6
+user_0036,Landing Page Visit,2024-01-09 10:00:00,1
+user_0036,Sign Up Form,2024-01-09 10:25:00,2
+user_0037,Landing Page Visit,2024-01-09 12:00:00,1
+user_0037,Sign Up Form,2024-01-09 12:30:00,2
+user_0037,Email Verification,2024-01-09 13:00:00,3
+user_0038,Landing Page Visit,2024-01-09 14:00:00,1
+user_0038,Sign Up Form,2024-01-09 14:15:00,2
+user_0038,Email Verification,2024-01-09 14:40:00,3
+user_0038,Profile Setup,2024-01-09 15:25:00,4
+user_0038,Tutorial Start,2024-01-09 16:15:00,5
+user_0038,First Feature Use,2024-01-09 17:30:00,6
+user_0038,Onboarding Complete,2024-01-09 18:05:00,7
+user_0039,Landing Page Visit,2024-01-09 16:00:00,1
+user_0039,Sign Up Form,2024-01-09 16:35:00,2
+user_0039,Email Verification,2024-01-09 17:10:00,3
+user_0040,Landing Page Visit,2024-01-10 09:00:00,1
+user_0040,Sign Up Form,2024-01-10 09:20:00,2
+user_0040,Email Verification,2024-01-10 09:45:00,3
+user_0040,Profile Setup,2024-01-10 10:30:00,4
+user_0041,Landing Page Visit,2024-01-10 11:00:00,1
+user_0041,Sign Up Form,2024-01-10 11:40:00,2
+user_0041,Email Verification,2024-01-10 12:15:00,3
+user_0041,Profile Setup,2024-01-10 13:00:00,4
+user_0041,Tutorial Start,2024-01-10 13:50:00,5
+user_0042,Landing Page Visit,2024-01-10 13:00:00,1
+user_0042,Sign Up Form,2024-01-10 13:25:00,2
+user_0043,Landing Page Visit,2024-01-10 15:00:00,1
+user_0043,Sign Up Form,2024-01-10 15:35:00,2
+user_0043,Email Verification,2024-01-10 16:10:00,3
+user_0044,Landing Page Visit,2024-01-10 17:00:00,1
+user_0044,Sign Up Form,2024-01-10 17:15:00,2
+user_0044,Email Verification,2024-01-10 17:40:00,3
+user_0044,Profile Setup,2024-01-10 18:25:00,4
+user_0044,Tutorial Start,2024-01-10 19:15:00,5
+user_0044,First Feature Use,2024-01-10 20:30:00,6
+user_0045,Landing Page Visit,2024-01-11 08:00:00,1
+user_0045,Sign Up Form,2024-01-11 08:30:00,2
+user_0045,Email Verification,2024-01-11 09:00:00,3
+user_0045,Profile Setup,2024-01-11 09:45:00,4
+user_0046,Landing Page Visit,2024-01-11 10:00:00,1
+user_0046,Sign Up Form,2024-01-11 10:25:00,2
+user_0046,Email Verification,2024-01-11 10:50:00,3
+user_0047,Landing Page Visit,2024-01-11 12:00:00,1
+user_0047,Sign Up Form,2024-01-11 12:30:00,2
+user_0047,Email Verification,2024-01-11 13:00:00,3
+user_0047,Profile Setup,2024-01-11 13:45:00,4
+user_0047,Tutorial Start,2024-01-11 14:35:00,5
+user_0047,First Feature Use,2024-01-11 15:50:00,6
+user_0047,Onboarding Complete,2024-01-11 16:25:00,7
+user_0048,Landing Page Visit,2024-01-11 14:00:00,1
+user_0048,Sign Up Form,2024-01-11 14:20:00,2
+user_0049,Landing Page Visit,2024-01-11 16:00:00,1
+user_0049,Sign Up Form,2024-01-11 16:35:00,2
+user_0049,Email Verification,2024-01-11 17:10:00,3
+user_0050,Landing Page Visit,2024-01-12 09:00:00,1
+user_0050,Sign Up Form,2024-01-12 09:15:00,2
+user_0050,Email Verification,2024-01-12 09:40:00,3
+user_0050,Profile Setup,2024-01-12 10:25:00,4
+user_0050,Tutorial Start,2024-01-12 11:15:00,5
+user_0010,Tutorial Start,2024-01-17 19:00:00,5
+user_0011,Landing Page Visit,2024-01-24 08:00:00,1
+user_0011,Sign Up Form,2024-01-24 09:00:00,2
+user_0012,Landing Page Visit,2024-01-31 08:00:00,1
+user_0012,Sign Up Form,2024-01-31 09:00:00,2
+user_0012,Email Verification,2024-01-31 11:00:00,3
+user_0012,Profile Setup,2024-01-31 14:00:00,4
+user_0013,Landing Page Visit,2024-01-06 08:00:00,1
+user_0013,Sign Up Form,2024-01-06 09:00:00,2
+user_0013,Email Verification,2024-01-06 11:00:00,3
+user_0013,Profile Setup,2024-01-06 14:00:00,4
+user_0013,Tutorial Start,2024-01-06 19:00:00,5
+user_0013,First Feature Use,2024-01-07 02:00:00,6
+user_0014,Landing Page Visit,2024-01-13 08:00:00,1
+user_0014,Sign Up Form,2024-01-13 09:00:00,2
+user_0015,Landing Page Visit,2024-01-20 08:00:00,1
+user_0015,Sign Up Form,2024-01-20 09:00:00,2
+user_0015,Email Verification,2024-01-20 11:00:00,3
+user_0015,Profile Setup,2024-01-20 14:00:00,4
+user_0015,Tutorial Start,2024-01-20 19:00:00,5
+user_0015,First Feature Use,2024-01-21 02:00:00,6
+user_0015,Onboarding Complete,2024-01-21 09:00:00,7
+user_0016,Landing Page Visit,2024-01-27 08:00:00,1
+user_0016,Sign Up Form,2024-01-27 09:00:00,2
+user_0016,Email Verification,2024-01-27 11:00:00,3
+user_0017,Landing Page Visit,2024-01-09 08:00:00,1
+user_0017,Sign Up Form,2024-01-09 09:00:00,2
+user_0017,Email Verification,2024-01-09 11:00:00,3
+user_0017,Profile Setup,2024-01-09 14:00:00,4
+user_0018,Landing Page Visit,2024-01-16 08:00:00,1
+user_0018,Sign Up Form,2024-01-16 09:00:00,2
+user_0019,Landing Page Visit,2024-01-23 08:00:00,1
+user_0019,Sign Up Form,2024-01-23 09:00:00,2
+user_0019,Email Verification,2024-01-23 11:00:00,3
+user_0019,Profile Setup,2024-01-23 14:00:00,4
+user_0019,Tutorial Start,2024-01-23 19:00:00,5
+user_0020,Landing Page Visit,2024-01-30 08:00:00,1
+user_0020,Sign Up Form,2024-01-30 09:00:00,2
+user_0020,Email Verification,2024-01-30 11:00:00,3
+user_0021,Landing Page Visit,2024-01-04 08:00:00,1
+user_0021,Sign Up Form,2024-01-04 09:00:00,2
+user_0021,Email Verification,2024-01-04 11:00:00,3
+user_0021,Profile Setup,2024-01-04 14:00:00,4
+user_0021,Tutorial Start,2024-01-04 19:00:00,5
+user_0021,First Feature Use,2024-01-05 02:00:00,6
+user_0022,Landing Page Visit,2024-01-11 08:00:00,1
+user_0022,Sign Up Form,2024-01-11 09:00:00,2
+user_0023,Landing Page Visit,2024-01-18 08:00:00,1
+user_0023,Sign Up Form,2024-01-18 09:00:00,2
+user_0023,Email Verification,2024-01-18 11:00:00,3
+user_0023,Profile Setup,2024-01-18 14:00:00,4
+user_0024,Landing Page Visit,2024-01-25 08:00:00,1
+user_0024,Sign Up Form,2024-01-25 09:00:00,2
+user_0024,Email Verification,2024-01-25 11:00:00,3
+user_0025,Landing Page Visit,2024-01-07 08:00:00,1
+user_0025,Sign Up Form,2024-01-07 09:00:00,2
+user_0025,Email Verification,2024-01-07 11:00:00,3
+user_0025,Profile Setup,2024-01-07 14:00:00,4
+user_0025,Tutorial Start,2024-01-07 19:00:00,5
+user_0026,Landing Page Visit,2024-01-14 08:00:00,1
+user_0026,Sign Up Form,2024-01-14 09:00:00,2
+user_0027,Landing Page Visit,2024-01-21 08:00:00,1
+user_0027,Sign Up Form,2024-01-21 09:00:00,2
+user_0027,Email Verification,2024-01-21 11:00:00,3
+user_0027,Profile Setup,2024-01-21 14:00:00,4
+user_0027,Tutorial Start,2024-01-21 19:00:00,5
+user_0027,First Feature Use,2024-01-22 02:00:00,6
+user_0027,Onboarding Complete,2024-01-22 09:00:00,7
+user_0028,Landing Page Visit,2024-01-28 08:00:00,1
+user_0028,Sign Up Form,2024-01-28 09:00:00,2
+user_0028,Email Verification,2024-01-28 11:00:00,3
+user_0029,Landing Page Visit,2024-01-10 08:00:00,1
+user_0029,Sign Up Form,2024-01-10 09:00:00,2
+user_0029,Email Verification,2024-01-10 11:00:00,3
+user_0029,Profile Setup,2024-01-10 14:00:00,4
+user_0030,Landing Page Visit,2024-01-17 08:00:00,1
+user_0030,Sign Up Form,2024-01-17 09:00:00,2
+user_0031,Landing Page Visit,2024-01-24 08:00:00,1
+user_0031,Sign Up Form,2024-01-24 09:00:00,2
+user_0031,Email Verification,2024-01-24 11:00:00,3
+user_0031,Profile Setup,2024-01-24 14:00:00,4
+user_0031,Tutorial Start,2024-01-24 19:00:00,5
+user_0032,Landing Page Visit,2024-01-31 08:00:00,1
+user_0032,Sign Up Form,2024-01-31 09:00:00,2
+user_0032,Email Verification,2024-01-31 11:00:00,3
+user_0033,Landing Page Visit,2024-01-03 08:00:00,1
+user_0033,Sign Up Form,2024-01-03 09:00:00,2
+user_0033,Email Verification,2024-01-03 11:00:00,3
+user_0033,Profile Setup,2024-01-03 14:00:00,4
+user_0033,Tutorial Start,2024-01-03 19:00:00,5
+user_0033,First Feature Use,2024-01-04 02:00:00,6
+user_0034,Landing Page Visit,2024-01-10 08:00:00,1
+user_0034,Sign Up Form,2024-01-10 09:00:00,2
+user_0035,Landing Page Visit,2024-01-17 08:00:00,1
+user_0035,Sign Up Form,2024-01-17 09:00:00,2
+user_0035,Email Verification,2024-01-17 11:00:00,3
+user_0035,Profile Setup,2024-01-17 14:00:00,4
+user_0036,Landing Page Visit,2024-01-24 08:00:00,1
+user_0036,Sign Up Form,2024-01-24 09:00:00,2
+user_0036,Email Verification,2024-01-24 11:00:00,3
+user_0037,Landing Page Visit,2024-01-31 08:00:00,1
+user_0037,Sign Up Form,2024-01-31 09:00:00,2
+user_0037,Email Verification,2024-01-31 11:00:00,3
+user_0037,Profile Setup,2024-01-31 14:00:00,4
+user_0037,Tutorial Start,2024-01-31 19:00:00,5
+user_0038,Landing Page Visit,2024-01-06 08:00:00,1
+user_0038,Sign Up Form,2024-01-06 09:00:00,2
+user_0039,Landing Page Visit,2024-01-13 08:00:00,1
+user_0039,Sign Up Form,2024-01-13 09:00:00,2
+user_0039,Email Verification,2024-01-13 11:00:00,3
+user_0039,Profile Setup,2024-01-13 14:00:00,4
+user_0039,Tutorial Start,2024-01-13 19:00:00,5
+user_0039,First Feature Use,2024-01-14 02:00:00,6
+user_0039,Onboarding Complete,2024-01-14 09:00:00,7
+user_0040,Landing Page Visit,2024-01-20 08:00:00,1
+user_0040,Sign Up Form,2024-01-20 09:00:00,2
+user_0040,Email Verification,2024-01-20 11:00:00,3
+user_0041,Landing Page Visit,2024-01-27 08:00:00,1
+user_0041,Sign Up Form,2024-01-27 09:00:00,2
+user_0041,Email Verification,2024-01-27 11:00:00,3
+user_0041,Profile Setup,2024-01-27 14:00:00,4
+user_0042,Landing Page Visit,2024-01-02 08:00:00,1
+user_0042,Sign Up Form,2024-01-02 09:00:00,2
+user_0043,Landing Page Visit,2024-01-09 08:00:00,1
+user_0043,Sign Up Form,2024-01-09 09:00:00,2
+user_0043,Email Verification,2024-01-09 11:00:00,3
+user_0043,Profile Setup,2024-01-09 14:00:00,4
+user_0043,Tutorial Start,2024-01-09 19:00:00,5
+user_0044,Landing Page Visit,2024-01-16 08:00:00,1
+user_0044,Sign Up Form,2024-01-16 09:00:00,2
+user_0044,Email Verification,2024-01-16 11:00:00,3
+user_0045,Landing Page Visit,2024-01-23 08:00:00,1
+user_0045,Sign Up Form,2024-01-23 09:00:00,2
+user_0045,Email Verification,2024-01-23 11:00:00,3
+user_0045,Profile Setup,2024-01-23 14:00:00,4
+user_0045,Tutorial Start,2024-01-23 19:00:00,5
+user_0045,First Feature Use,2024-01-24 02:00:00,6

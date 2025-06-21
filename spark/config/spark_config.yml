@@ -1,0 +1,304 @@
+# Spark Configuration for Telemetry Lakehouse
+# This configuration supports both local development and production deployment
+
+# Application Settings
+app:
+  name: "telemetry-lakehouse"
+  version: "1.0.0"
+  description: "Real-time telemetry data processing pipeline"
+
+# Spark Configuration
+spark:
+  # Application Settings
+  app_name: "TelemetryLakehouseProcessor"
+  
+  # Resource Configuration
+  driver:
+    memory: "2g"
+    cores: 2
+    max_result_size: "1g"
+    
+  executor:
+    memory: "4g"
+    cores: 4
+    instances: 2
+    memory_fraction: 0.8
+    
+  # Serialization & Performance
+  serializer: "org.apache.spark.serializer.KryoSerializer"
+  sql:
+    adaptive:
+      enabled: true
+      coalescePartitions:
+        enabled: true
+        minPartitionNum: 1
+        advisoryPartitionSizeInBytes: "64MB"
+    execution:
+      arrow:
+        pyspark:
+          enabled: true
+    
+  # Dynamic Allocation
+  dynamicAllocation:
+    enabled: true
+    minExecutors: 1
+    maxExecutors: 10
+    initialExecutors: 2
+    
+  # Checkpointing & Recovery
+  sql:
+    streaming:
+      checkpointLocation: "s3a://telemetry-lakehouse/checkpoints/"
+      forceDeleteTempCheckpointLocation: true
+
+# Delta Lake Configuration
+delta:
+  autoCompact:
+    enabled: true
+  autoOptimize:
+    optimizeWrite: true
+    autoCompact: true
+  logRetentionDuration: "interval 30 days"
+  deletedFileRetentionDuration: "interval 7 days"
+
+# Data Sources Configuration
+data_sources:
+  # Raw Data Input
+  raw_events:
+    format: "kafka"
+    kafka:
+      bootstrap_servers: "localhost:9092,kafka-cluster:9092"
+      topics: 
+        - "user-events"
+        - "feature-clicks" 
+        - "api-calls"
+        - "error-logs"
+      consumer_group: "telemetry-processor"
+      starting_offsets: "latest"
+      max_offsets_per_trigger: 10000
+      
+  # Batch Data Sources  
+  user_profiles:
+    format: "delta"
+    path: "s3a://telemetry-lakehouse/tables/user_profiles/"
+    
+  feature_metadata:
+    format: "parquet"
+    path: "s3a://telemetry-lakehouse/reference/features/"
+
+# Output Configuration
+outputs:
+  # Feature Usage Aggregations
+  feature_usage_hourly:
+    format: "delta"
+    path: "s3a://telemetry-lakehouse/tables/feature_usage_hourly/"
+    mode: "append"
+    partitionBy: ["year", "month", "day", "hour"]
+    
+  # User Session Analytics  
+  user_sessions:
+    format: "delta" 
+    path: "s3a://telemetry-lakehouse/tables/user_sessions/"
+    mode: "overwrite"
+    partitionBy: ["session_date"]
+    
+  # Real-time Metrics
+  realtime_metrics:
+    format: "kafka"
+    kafka:
+      bootstrap_servers: "localhost:9092"
+      topic: "telemetry-metrics"
+      
+  # Funnel Analysis
+  funnel_events:
+    format: "delta"
+    path: "s3a://telemetry-lakehouse/tables/funnel_events/" 
+    mode: "append"
+    partitionBy: ["funnel_type", "event_date"]
+
+# Processing Configuration
+processing:
+  # Batch Processing
+  batch:
+    trigger_interval: "1 hour"
+    watermark_delay: "10 minutes"
+    window_duration: "1 hour"
+    slide_duration: "1 hour"
+    
+  # Stream Processing  
+  streaming:
+    trigger_interval: "30 seconds"
+    watermark_delay: "5 minutes" 
+    output_mode: "append"
+    checkpoint_interval: "10 seconds"
+    
+  # Data Quality
+  data_quality:
+    enable_validation: true
+    null_threshold: 0.05  # 5% null threshold
+    duplicate_threshold: 0.01  # 1% duplicate threshold
+    late_data_threshold: "6 hours"
+
+# Job-Specific Configuration
+jobs:
+  # Hourly Feature Aggregation
+  hourly_aggregation:
+    input_table: "raw_events"
+    output_table: "feature_usage_hourly"
+    window_duration: "1 hour"
+    slide_duration: "1 hour"
+    watermark: "10 minutes"
+    partitions: 200
+    
+  # User Session Processing
+  session_processing:
+    input_table: "raw_events"
+    output_table: "user_sessions"
+    session_timeout: "30 minutes"
+    min_session_events: 3
+    
+  # Real-time Feature Popularity
+  feature_popularity:
+    input_topics: ["user-events", "feature-clicks"]
+    output_topic: "feature-popularity"
+    window_duration: "5 minutes"
+    slide_duration: "1 minute"
+    
+  # Funnel Analysis Processing
+  funnel_analysis:
+    input_table: "raw_events"
+    output_table: "funnel_events"
+    funnel_definitions:
+      onboarding:
+        steps: ["signup", "email_verify", "profile_setup", "first_login"]
+        max_time_between_steps: "7 days"
+      feature_adoption:
+        steps: ["feature_discovery", "feature_click", "feature_use"]
+        max_time_between_steps: "30 days"
+
+# Environment-Specific Overrides
+environments:
+  development:
+    spark:
+      driver:
+        memory: "1g"
+      executor:
+        memory: "2g"
+        instances: 1
+    data_sources:
+      raw_events:
+        kafka:
+          bootstrap_servers: "localhost:9092"
+    outputs:
+      feature_usage_hourly:
+        path: "file:///tmp/telemetry-dev/feature_usage_hourly/"
+        
+  staging:
+    spark:
+      driver:
+        memory: "4g"
+      executor:
+        memory: "8g"
+        instances: 4
+    data_sources:
+      raw_events:
+        kafka:
+          bootstrap_servers: "staging-kafka:9092"
+          
+  production:
+    spark:
+      driver:
+        memory: "8g"
+      executor:
+        memory: "16g"
+        instances: 10
+    data_sources:
+      raw_events:
+        kafka:
+          bootstrap_servers: "prod-kafka-1:9092,prod-kafka-2:9092,prod-kafka-3:9092"
+
+# Monitoring & Observability
+monitoring:
+  metrics:
+    enabled: true
+    reporters:
+      - "org.apache.spark.metrics.sink.ConsoleSink"
+      - "org.apache.spark.metrics.sink.PrometheusServlet"
+    prometheus:
+      port: 4040
+      path: "/metrics"
+      
+  logging:
+    level: "INFO"
+    pattern: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+    appenders:
+      - type: "console"
+      - type: "file"
+        file: "/var/log/spark/telemetry-processor.log"
+        
+  alerting:
+    enabled: true
+    webhook_url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+    thresholds:
+      processing_lag: "5 minutes"
+      error_rate: 0.05
+      memory_usage: 0.85
+
+# Security Configuration  
+security:
+  authentication:
+    enabled: true
+    type: "kerberos"  # or "oauth2", "ldap"
+    
+  encryption:
+    enabled: true
+    ssl:
+      enabled: true
+      keystore_path: "/etc/ssl/certs/spark-keystore.jks"
+      truststore_path: "/etc/ssl/certs/spark-truststore.jks"
+      
+  authorization:
+    enabled: true
+    acl_enabled: true
+
+# Cloud Provider Specific Settings
+cloud:
+  aws:
+    region: "us-west-2"
+    s3:
+      access_key: "${AWS_ACCESS_KEY_ID}"
+      secret_key: "${AWS_SECRET_ACCESS_KEY}"
+      endpoint: "s3.us-west-2.amazonaws.com"
+    emr:
+      cluster_id: "j-XXXXXXXXX"
+      
+  azure:
+    storage_account: "telemetrylakehouse"
+    container: "data"
+    
+  gcp:
+    project_id: "telemetry-lakehouse-prod"
+    dataset: "telemetry_analytics"
+
+# Custom Application Properties
+application:
+  # Business Logic Configuration
+  feature_categories:
+    core: ["dashboard_view", "search", "profile_edit"]
+    analytics: ["create_report", "chart_create", "export_data"]
+    social: ["share_content", "comment_post", "team_invite"]
+    admin: ["billing_view", "notification_settings", "api_call"]
+    
+  # Data Retention Policies
+  retention:
+    raw_events: "90 days"
+    aggregated_hourly: "2 years" 
+    user_sessions: "1 year"
+    funnel_data: "1 year"
+    
+  # Feature Flags
+  features:
+    enable_real_time_alerts: true
+    enable_ml_predictions: true
+    enable_advanced_analytics: true
+    enable_data_lineage_tracking: true

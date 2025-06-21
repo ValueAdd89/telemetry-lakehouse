@@ -1,0 +1,501 @@
+user_id,gender,age,condition,region,join_date,is_active
+user_0001,Female,38,Premium,Latin America,2023-06-19,true
+user_0002,Female,46,Premium,North America,2022-03-22,true
+user_0003,Female,21,Free,Latin America,2023-08-24,true
+user_0004,Female,46,Free,Asia Pacific,2023-06-13,true
+user_0005,Other,29,Premium,Europe,2022-05-15,true
+user_0006,Male,35,Free,North America,2022-08-30,true
+user_0007,Female,28,Trial,Europe,2023-02-14,false
+user_0008,Male,42,Enterprise,North America,2022-11-07,true
+user_0009,Female,33,Free,Asia Pacific,2023-01-18,true
+user_0010,Male,27,Premium,Europe,2022-12-03,true
+user_0011,Female,39,Free,North America,2023-04-21,true
+user_0012,Male,31,Trial,Asia Pacific,2023-07-09,true
+user_0013,Female,45,Premium,Europe,2022-06-26,false
+user_0014,Male,25,Free,North America,2023-09-12,true
+user_0015,Other,52,Enterprise,Europe,2022-02-18,true
+user_0016,Female,34,Premium,Asia Pacific,2023-05-07,true
+user_0017,Male,29,Free,North America,2022-10-15,true
+user_0018,Female,41,Trial,Latin America,2023-03-28,false
+user_0019,Male,36,Premium,Europe,2022-07-11,true
+user_0020,Female,30,Free,Asia Pacific,2023-06-02,true
+user_0021,Male,48,Enterprise,North America,2022-04-14,true
+user_0022,Female,26,Premium,Europe,2023-08-19,true
+user_0023,Male,37,Free,Asia Pacific,2022-09-25,false
+user_0024,Other,43,Trial,Latin America,2023-01-06,true
+user_0025,Female,32,Premium,North America,2022-12-21,true
+user_0026,Male,28,Free,Europe,2023-05-16,true
+user_0027,Female,44,Enterprise,Asia Pacific,2022-03-09,true
+user_0028,Male,24,Premium,North America,2023-07-04,false
+user_0029,Female,38,Free,Latin America,2022-11-17,true
+user_0030,Male,31,Trial,Europe,2023-02-23,true
+user_0031,Female,47,Premium,Asia Pacific,2022-08-06,true
+user_0032,Male,26,Free,North America,2023-04-12,true
+user_0033,Other,35,Enterprise,Europe,2022-06-28,false
+user_0034,Female,29,Premium,Latin America,2023-09-14,true
+user_0035,Male,40,Free,Asia Pacific,2022-01-31,true
+user_0036,Female,33,Trial,North America,2023-08-07,true
+user_0037,Male,27,Premium,Europe,2022-10-20,true
+user_0038,Female,42,Free,Asia Pacific,2023-03-15,false
+user_0039,Male,36,Enterprise,Latin America,2022-05-03,true
+user_0040,Female,30,Premium,North America,2023-06-25,true
+user_0041,Male,45,Free,Europe,2022-12-08,true
+user_0042,Other,28,Trial,Asia Pacific,2023-01-21,true
+user_0043,Female,34,Premium,North America,2022-04-16,false
+user_0044,Male,39,Free,Latin America,2023-07-29,true
+user_0045,Female,25,Enterprise,Europe,2022-09-11,true
+user_0046,Male,32,Premium,Asia Pacific,2023-02-05,true
+user_0047,Female,41,Free,North America,2022-11-23,true
+user_0048,Male,29,Trial,Europe,2023-05-08,false
+user_0049,Female,37,Premium,Latin America,2022-07-14,true
+user_0050,Male,31,Free,Asia Pacific,2023-08-26,true
+user_0051,Other,46,Enterprise,North America,2022-02-07,true
+user_0052,Female,27,Premium,Europe,2023-04-19,true
+user_0053,Male,35,Free,Asia Pacific,2022-06-01,false
+user_0054,Female,40,Trial,Latin America,2023-09-13,true
+user_0055,Male,24,Premium,North America,2022-03-27,true
+user_0056,Female,38,Free,Europe,2023-06-10,true
+user_0057,Male,33,Enterprise,Asia Pacific,2022-08-22,true
+user_0058,Female,29,Premium,North America,2023-01-04,false
+user_0059,Male,42,Free,Latin America,2022-10-17,true
+user_0060,Other,36,Trial,Europe,2023-03-31,true
+user_0061,Female,30,Premium,Asia Pacific,2022-05-13,true
+user_0062,Male,44,Free,North America,2023-07-25,true
+user_0063,Female,26,Enterprise,Europe,2022-12-06,false
+user_0064,Male,39,Premium,Latin America,2023-02-18,true
+user_0065,Female,32,Free,Asia Pacific,2022-04-30,true
+user_0066,Male,28,Trial,North America,2023-08-12,true
+user_0067,Female,43,Premium,Europe,2022-11-24,true
+user_0068,Male,34,Free,Asia Pacific,2023-01-07,false
+user_0069,Other,41,Enterprise,Latin America,2022-06-19,true
+user_0070,Female,27,Premium,North America,2023-09-01,true
+user_0071,Male,37,Free,Europe,2022-03-14,true
+user_0072,Female,31,Trial,Asia Pacific,2023-05-27,true
+user_0073,Male,45,Premium,North America,2022-08-09,false
+user_0074,Female,25,Free,Latin America,2023-07-21,true
+user_0075,Male,38,Enterprise,Europe,2022-10-03,true
+user_0076,Female,33,Premium,Asia Pacific,2023-02-15,true
+user_0077,Male,29,Free,North America,2022-12-28,true
+user_0078,Other,42,Trial,Europe,2023-04-11,false
+user_0079,Female,36,Premium,Latin America,2022-06-24,true
+user_0080,Male,30,Free,Asia Pacific,2023-08-06,true
+user_0081,Female,46,Enterprise,North America,2022-01-19,true
+user_0082,Male,26,Premium,Europe,2023-09-30,true
+user_0083,Female,40,Free,Asia Pacific,2022-04-03,false
+user_0084,Male,32,Trial,Latin America,2023-06-16,true
+user_0085,Female,28,Premium,North America,2022-08-28,true
+user_0086,Male,44,Free,Europe,2023-01-10,true
+user_0087,Other,35,Enterprise,Asia Pacific,2022-11-22,true
+user_0088,Female,31,Premium,North America,2023-03-06,false
+user_0089,Male,39,Free,Latin America,2022-05-18,true
+user_0090,Female,27,Trial,Europe,2023-07-30,true
+user_0091,Male,41,Premium,Asia Pacific,2022-10-12,true
+user_0092,Female,34,Free,North America,2023-02-24,true
+user_0093,Male,24,Enterprise,Europe,2022-12-07,false
+user_0094,Female,37,Premium,Latin America,2023-04-20,true
+user_0095,Male,30,Free,Asia Pacific,2022-07-02,true
+user_0096,Other,43,Trial,North America,2023-09-14,true
+user_0097,Female,29,Premium,Europe,2022-02-26,true
+user_0098,Male,36,Free,Asia Pacific,2023-06-08,false
+user_0099,Female,32,Enterprise,Latin America,2022-09-20,true
+user_0100,Male,28,Premium,North America,2023-01-02,true
+user_0101,Female,45,Free,Europe,2022-11-14,true
+user_0102,Male,25,Trial,Asia Pacific,2023-03-28,true
+user_0103,Female,38,Premium,North America,2022-06-10,false
+user_0104,Male,31,Free,Latin America,2023-08-22,true
+user_0105,Other,42,Enterprise,Europe,2022-04-05,true
+user_0106,Female,27,Premium,Asia Pacific,2023-07-17,true
+user_0107,Male,40,Free,North America,2022-12-29,true
+user_0108,Female,33,Trial,Europe,2023-02-11,false
+user_0109,Male,35,Premium,Latin America,2022-05-25,true
+user_0110,Female,29,Free,Asia Pacific,2023-09-06,true
+user_0111,Male,44,Enterprise,North America,2022-01-18,true
+user_0112,Female,26,Premium,Europe,2023-04-01,true
+user_0113,Male,39,Free,Asia Pacific,2022-07-14,false
+user_0114,Other,32,Trial,Latin America,2023-06-26,true
+user_0115,Female,28,Premium,North America,2022-09-08,true
+user_0116,Male,41,Free,Europe,2023-01-20,true
+user_0117,Female,34,Enterprise,Asia Pacific,2022-11-02,true
+user_0118,Male,30,Premium,North America,2023-03-16,false
+user_0119,Female,37,Free,Latin America,2022-05-28,true
+user_0120,Male,24,Trial,Europe,2023-08-10,true
+user_0121,Female,43,Premium,Asia Pacific,2022-10-22,true
+user_0122,Male,31,Free,North America,2023-02-04,true
+user_0123,Other,46,Enterprise,Europe,2022-12-17,false
+user_0124,Female,27,Premium,Latin America,2023-04-30,true
+user_0125,Male,38,Free,Asia Pacific,2022-07-12,true
+user_0126,Female,32,Trial,North America,2023-09-24,true
+user_0127,Male,29,Premium,Europe,2022-02-06,true
+user_0128,Female,42,Free,Asia Pacific,2023-06-18,false
+user_0129,Male,35,Enterprise,Latin America,2022-08-30,true
+user_0130,Female,25,Premium,North America,2023-01-12,true
+user_0131,Male,40,Free,Europe,2022-11-24,true
+user_0132,Other,33,Trial,Asia Pacific,2023-03-08,true
+user_0133,Female,28,Premium,North America,2022-05-20,false
+user_0134,Male,44,Free,Latin America,2023-07-02,true
+user_0135,Female,31,Enterprise,Europe,2022-09-14,true
+user_0136,Male,36,Premium,Asia Pacific,2023-02-26,true
+user_0137,Female,26,Free,North America,2022-12-09,true
+user_0138,Male,39,Trial,Europe,2023-04-22,false
+user_0139,Female,32,Premium,Latin America,2022-06-04,true
+user_0140,Male,28,Free,Asia Pacific,2023-08-16,true
+user_0141,Other,45,Enterprise,North America,2022-01-28,true
+user_0142,Female,30,Premium,Europe,2023-09-10,true
+user_0143,Male,37,Free,Asia Pacific,2022-03-24,false
+user_0144,Female,24,Trial,Latin America,2023-06-06,true
+user_0145,Male,41,Premium,North America,2022-08-18,true
+user_0146,Female,34,Free,Europe,2023-01-30,true
+user_0147,Male,29,Enterprise,Asia Pacific,2022-11-12,true
+user_0148,Female,43,Premium,North America,2023-03-26,false
+user_0149,Male,31,Free,Latin America,2022-05-08,true
+user_0150,Other,38,Trial,Europe,2023-07-20,true
+user_0151,Female,27,Premium,Asia Pacific,2022-10-02,true
+user_0152,Male,42,Free,North America,2023-02-14,true
+user_0153,Female,35,Enterprise,Europe,2022-12-27,false
+user_0154,Male,25,Premium,Latin America,2023-04-10,true
+user_0155,Female,40,Free,Asia Pacific,2022-06-22,true
+user_0156,Male,32,Trial,North America,2023-09-04,true
+user_0157,Female,28,Premium,Europe,2022-02-16,true
+user_0158,Male,44,Free,Asia Pacific,2023-06-28,false
+user_0159,Other,36,Enterprise,Latin America,2022-09-10,true
+user_0160,Female,30,Premium,North America,2023-01-22,true
+user_0161,Male,39,Free,Europe,2022-11-04,true
+user_0162,Female,26,Trial,Asia Pacific,2023-03-18,true
+user_0163,Male,41,Premium,North America,2022-05-30,false
+user_0164,Female,33,Free,Latin America,2023-08-12,true
+user_0165,Male,29,Enterprise,Europe,2022-07-24,true
+user_0166,Female,37,Premium,Asia Pacific,2023-02-06,true
+user_0167,Male,31,Free,North America,2022-12-19,true
+user_0168,Other,45,Trial,Europe,2023-04-02,false
+user_0169,Female,24,Premium,Latin America,2022-06-14,true
+user_0170,Male,38,Free,Asia Pacific,2023-08-26,true
+user_0171,Female,32,Enterprise,North America,2022-01-08,true
+user_0172,Male,28,Premium,Europe,2023-09-20,true
+user_0173,Female,42,Free,Asia Pacific,2022-04-03,false
+user_0174,Male,35,Trial,Latin America,2023-06-15,true
+user_0175,Female,26,Premium,North America,2022-08-27,true
+user_0176,Male,40,Free,Europe,2023-01-09,true
+user_0177,Other,34,Enterprise,Asia Pacific,2022-11-21,true
+user_0178,Female,29,Premium,North America,2023-03-05,false
+user_0179,Male,43,Free,Latin America,2022-05-17,true
+user_0180,Female,31,Trial,Europe,2023-07-29,true
+user_0181,Male,37,Premium,Asia Pacific,2022-10-11,true
+user_0182,Female,25,Free,North America,2023-02-23,true
+user_0183,Male,39,Enterprise,Europe,2022-12-06,false
+user_0184,Female,33,Premium,Latin America,2023-04-19,true
+user_0185,Male,28,Free,Asia Pacific,2022-07-01,true
+user_0186,Other,44,Trial,North America,2023-09-13,true
+user_0187,Female,30,Premium,Europe,2022-02-25,true
+user_0188,Male,36,Free,Asia Pacific,2023-06-07,false
+user_0189,Female,32,Enterprise,Latin America,2022-09-19,true
+user_0190,Male,27,Premium,North America,2023-01-01,true
+user_0191,Female,41,Free,Europe,2022-11-13,true
+user_0192,Male,34,Trial,Asia Pacific,2023-03-27,true
+user_0193,Female,29,Premium,North America,2022-06-09,false
+user_0194,Male,45,Free,Latin America,2023-08-21,true
+user_0195,Other,31,Enterprise,Europe,2022-04-04,true
+user_0196,Female,38,Premium,Asia Pacific,2023-07-16,true
+user_0197,Male,26,Free,North America,2022-12-28,true
+user_0198,Female,42,Trial,Europe,2023-02-10,false
+user_0199,Male,35,Premium,Latin America,2022-05-24,true
+user_0200,Female,28,Free,Asia Pacific,2023-09-05,true
+user_0201,Male,40,Enterprise,North America,2022-01-17,true
+user_0202,Female,33,Premium,Europe,2023-03-31,true
+user_0203,Male,24,Free,Asia Pacific,2022-07-13,false
+user_0204,Other,37,Trial,Latin America,2023-06-25,true
+user_0205,Female,30,Premium,North America,2022-09-07,true
+user_0206,Male,43,Free,Europe,2023-01-19,true
+user_0207,Female,29,Enterprise,Asia Pacific,2022-11-01,true
+user_0208,Male,36,Premium,North America,2023-03-15,false
+user_0209,Female,32,Free,Latin America,2022-05-27,true
+user_0210,Male,25,Trial,Europe,2023-08-09,true
+user_0211,Female,39,Premium,Asia Pacific,2022-10-21,true
+user_0212,Male,31,Free,North America,2023-02-03,true
+user_0213,Other,44,Enterprise,Europe,2022-12-16,false
+user_0214,Female,27,Premium,Latin America,2023-04-29,true
+user_0215,Male,41,Free,Asia Pacific,2022-07-11,true
+user_0216,Female,34,Trial,North America,2023-09-23,true
+user_0217,Male,28,Premium,Europe,2022-02-05,true
+user_0218,Female,38,Free,Asia Pacific,2023-06-17,false
+user_0219,Male,32,Enterprise,Latin America,2022-08-29,true
+user_0220,Female,26,Premium,North America,2023-01-11,true
+user_0221,Male,42,Free,Europe,2022-11-23,true
+user_0222,Other,35,Trial,Asia Pacific,2023-03-07,true
+user_0223,Female,29,Premium,North America,2022-05-19,false
+user_0224,Male,40,Free,Latin America,2023-07-01,true
+user_0225,Female,33,Enterprise,Europe,2022-09-13,true
+user_0226,Male,24,Premium,Asia Pacific,2023-02-25,true
+user_0227,Female,37,Free,North America,2022-12-08,true
+user_0228,Male,31,Trial,Europe,2023-04-21,false
+user_0229,Female,45,Premium,Latin America,2022-06-03,true
+user_0230,Male,28,Free,Asia Pacific,2023-08-15,true
+user_0231,Other,36,Enterprise,North America,2022-01-27,true
+user_0232,Female,30,Premium,Europe,2023-09-09,true
+user_0233,Male,39,Free,Asia Pacific,2022-03-23,false
+user_0234,Female,32,Trial,Latin America,2023-06-05,true
+user_0235,Male,27,Premium,North America,2022-08-17,true
+user_0236,Female,43,Free,Europe,2023-01-29,true
+user_0237,Male,34,Enterprise,Asia Pacific,2022-11-11,true
+user_0238,Female,25,Premium,North America,2023-03-25,false
+user_0239,Male,41,Free,Latin America,2022-05-07,true
+user_0240,Other,38,Trial,Europe,2023-07-19,true
+user_0241,Female,29,Premium,Asia Pacific,2022-10-01,true
+user_0242,Male,44,Free,North America,2023-02-13,true
+user_0243,Female,31,Enterprise,Europe,2022-12-26,false
+user_0244,Male,26,Premium,Latin America,2023-04-09,true
+user_0245,Female,37,Free,Asia Pacific,2022-06-21,true
+user_0246,Male,33,Trial,North America,2023-09-03,true
+user_0247,Female,28,Premium,Europe,2022-02-15,true
+user_0248,Male,42,Free,Asia Pacific,2023-06-27,false
+user_0249,Other,35,Enterprise,Latin America,2022-09-09,true
+user_0250,Female,30,Premium,North America,2023-01-21,true
+user_0251,Male,39,Free,Europe,2022-11-03,true
+user_0252,Female,24,Trial,Asia Pacific,2023-03-17,true
+user_0253,Male,36,Premium,North America,2022-05-29,false
+user_0254,Female,32,Free,Latin America,2023-08-11,true
+user_0255,Male,28,Enterprise,Europe,2022-07-23,true
+user_0256,Female,40,Premium,Asia Pacific,2023-02-05,true
+user_0257,Male,31,Free,North America,2022-12-18,true
+user_0258,Other,45,Trial,Europe,2023-04-01,false
+user_0259,Female,27,Premium,Latin America,2022-06-13,true
+user_0260,Male,38,Free,Asia Pacific,2023-08-25,true
+user_0261,Female,33,Enterprise,North America,2022-01-07,true
+user_0262,Male,29,Premium,Europe,2023-09-19,true
+user_0263,Female,41,Free,Asia Pacific,2022-04-02,false
+user_0264,Male,34,Trial,Latin America,2023-06-14,true
+user_0265,Female,26,Premium,North America,2022-08-26,true
+user_0266,Male,37,Free,Europe,2023-01-08,true
+user_0267,Other,43,Enterprise,Asia Pacific,2022-11-20,true
+user_0268,Female,30,Premium,North America,2023-03-04,false
+user_0269,Male,36,Free,Latin America,2022-05-16,true
+user_0270,Female,32,Trial,Europe,2023-07-28,true
+user_0271,Male,25,Premium,Asia Pacific,2022-10-10,true
+user_0272,Female,39,Free,North America,2023-02-22,true
+user_0273,Male,31,Enterprise,Europe,2022-12-05,false
+user_0274,Female,28,Premium,Latin America,2023-04-18,true
+user_0275,Male,44,Free,Asia Pacific,2022-06-30,true
+user_0276,Other,35,Trial,North America,2023-09-12,true
+user_0277,Female,29,Premium,Europe,2022-02-24,true
+user_0278,Male,42,Free,Asia Pacific,2023-06-06,false
+user_0279,Female,33,Enterprise,Latin America,2022-09-18,true
+user_0280,Male,27,Premium,North America,2022-12-31,true
+user_0281,Female,40,Free,Europe,2022-11-12,true
+user_0282,Male,34,Trial,Asia Pacific,2023-03-26,true
+user_0283,Female,24,Premium,North America,2022-06-08,false
+user_0284,Male,38,Free,Latin America,2023-08-20,true
+user_0285,Other,31,Enterprise,Europe,2022-04-03,true
+user_0286,Female,26,Premium,Asia Pacific,2023-07-15,true
+user_0287,Male,41,Free,North America,2022-12-27,true
+user_0288,Female,35,Trial,Europe,2023-02-09,false
+user_0289,Male,29,Premium,Latin America,2022-05-23,true
+user_0290,Female,43,Free,Asia Pacific,2023-09-04,true
+user_0291,Male,32,Enterprise,North America,2022-01-16,true
+user_0292,Female,28,Premium,Europe,2023-03-30,true
+user_0293,Male,37,Free,Asia Pacific,2022-07-12,false
+user_0294,Other,30,Trial,Latin America,2023-06-24,true
+user_0295,Female,39,Premium,North America,2022-09-06,true
+user_0296,Male,25,Free,Europe,2023-01-18,true
+user_0297,Female,44,Enterprise,Asia Pacific,2022-10-31,true
+user_0298,Male,33,Premium,North America,2023-03-14,false
+user_0299,Female,27,Free,Latin America,2022-05-26,true
+user_0300,Male,41,Trial,Europe,2023-08-08,true
+user_0301,Female,36,Premium,Asia Pacific,2022-10-20,true
+user_0302,Male,29,Free,North America,2023-02-02,true
+user_0303,Other,45,Enterprise,Europe,2022-12-15,false
+user_0304,Female,31,Premium,Latin America,2023-04-28,true
+user_0305,Male,24,Free,Asia Pacific,2022-07-10,true
+user_0306,Female,38,Trial,North America,2023-09-22,true
+user_0307,Male,32,Premium,Europe,2022-02-04,true
+user_0308,Female,26,Free,Asia Pacific,2023-06-16,false
+user_0309,Male,40,Enterprise,Latin America,2022-08-28,true
+user_0310,Female,34,Premium,North America,2023-01-10,true
+user_0311,Male,28,Free,Europe,2022-11-22,true
+user_0312,Other,42,Trial,Asia Pacific,2023-03-06,true
+user_0313,Female,35,Premium,North America,2022-05-18,false
+user_0314,Male,29,Free,Latin America,2023-06-30,true
+user_0315,Female,37,Enterprise,Europe,2022-09-12,true
+user_0316,Male,31,Premium,Asia Pacific,2023-02-24,true
+user_0317,Female,25,Free,North America,2022-12-07,true
+user_0318,Male,43,Trial,Europe,2023-04-20,false
+user_0319,Female,30,Premium,Latin America,2022-06-02,true
+user_0320,Male,36,Free,Asia Pacific,2023-08-14,true
+user_0321,Other,39,Enterprise,North America,2022-01-26,true
+user_0322,Female,32,Premium,Europe,2023-09-08,true
+user_0323,Male,27,Free,Asia Pacific,2022-03-22,false
+user_0324,Female,41,Trial,Latin America,2023-06-04,true
+user_0325,Male,34,Premium,North America,2022-08-16,true
+user_0326,Female,28,Free,Europe,2023-01-28,true
+user_0327,Male,44,Enterprise,Asia Pacific,2022-11-10,true
+user_0328,Female,26,Premium,North America,2023-03-24,false
+user_0329,Male,38,Free,Latin America,2022-05-06,true
+user_0330,Other,33,Trial,Europe,2023-07-18,true
+user_0331,Female,29,Premium,Asia Pacific,2022-09-30,true
+user_0332,Male,40,Free,North America,2023-02-12,true
+user_0333,Female,35,Enterprise,Europe,2022-12-25,false
+user_0334,Male,31,Premium,Latin America,2023-04-08,true
+user_0335,Female,24,Free,Asia Pacific,2022-06-20,true
+user_0336,Male,37,Trial,North America,2023-09-02,true
+user_0337,Female,32,Premium,Europe,2022-02-14,true
+user_0338,Male,28,Free,Asia Pacific,2023-06-26,false
+user_0339,Other,42,Enterprise,Latin America,2022-09-08,true
+user_0340,Female,30,Premium,North America,2023-01-20,true
+user_0341,Male,36,Free,Europe,2022-11-02,true
+user_0342,Female,25,Trial,Asia Pacific,2023-03-16,true
+user_0343,Male,39,Premium,North America,2022-05-28,false
+user_0344,Female,33,Free,Latin America,2023-08-10,true
+user_0345,Male,27,Enterprise,Europe,2022-07-22,true
+user_0346,Female,41,Premium,Asia Pacific,2023-02-04,true
+user_0347,Male,34,Free,North America,2022-12-17,true
+user_0348,Other,29,Trial,Europe,2023-03-31,false
+user_0349,Female,43,Premium,Latin America,2022-06-12,true
+user_0350,Male,31,Free,Asia Pacific,2023-08-24,true
+user_0351,Female,26,Enterprise,North America,2022-01-06,true
+user_0352,Male,38,Premium,Europe,2023-09-18,true
+user_0353,Female,32,Free,Asia Pacific,2022-04-01,false
+user_0354,Male,35,Trial,Latin America,2023-06-13,true
+user_0355,Female,28,Premium,North America,2022-08-25,true
+user_0356,Male,40,Free,Europe,2023-01-07,true
+user_0357,Other,44,Enterprise,Asia Pacific,2022-11-19,true
+user_0358,Female,30,Premium,North America,2023-03-03,false
+user_0359,Male,37,Free,Latin America,2022-05-15,true
+user_0360,Female,24,Trial,Europe,2023-07-27,true
+user_0361,Male,33,Premium,Asia Pacific,2022-10-09,true
+user_0362,Female,29,Free,North America,2023-02-21,true
+user_0363,Male,41,Enterprise,Europe,2022-12-04,false
+user_0364,Female,36,Premium,Latin America,2023-04-17,true
+user_0365,Male,27,Free,Asia Pacific,2022-06-29,true
+user_0366,Other,42,Trial,North America,2023-09-11,true
+user_0367,Female,31,Premium,Europe,2022-02-23,true
+user_0368,Male,25,Free,Asia Pacific,2023-06-05,false
+user_0369,Female,38,Enterprise,Latin America,2022-09-17,true
+user_0370,Male,32,Premium,North America,2022-12-30,true
+user_0371,Female,28,Free,Europe,2022-11-11,true
+user_0372,Male,43,Trial,Asia Pacific,2023-03-25,true
+user_0373,Female,34,Premium,North America,2022-06-07,false
+user_0374,Male,26,Free,Latin America,2023-08-19,true
+user_0375,Other,39,Enterprise,Europe,2022-04-02,true
+user_0376,Female,30,Premium,Asia Pacific,2023-07-14,true
+user_0377,Male,35,Free,North America,2022-12-26,true
+user_0378,Female,29,Trial,Europe,2023-02-08,false
+user_0379,Male,41,Premium,Latin America,2022-05-22,true
+user_0380,Female,33,Free,Asia Pacific,2023-09-03,true
+user_0381,Male,27,Enterprise,North America,2022-01-15,true
+user_0382,Female,37,Premium,Europe,2023-03-29,true
+user_0383,Male,31,Free,Asia Pacific,2022-07-11,false
+user_0384,Other,45,Trial,Latin America,2023-06-23,true
+user_0385,Female,24,Premium,North America,2022-09-05,true
+user_0386,Male,38,Free,Europe,2023-01-17,true
+user_0387,Female,32,Enterprise,Asia Pacific,2022-10-30,true
+user_0388,Male,28,Premium,North America,2023-03-13,false
+user_0389,Female,40,Free,Latin America,2022-05-25,true
+user_0390,Male,34,Trial,Europe,2023-08-07,true
+user_0391,Female,26,Premium,Asia Pacific,2022-10-19,true
+user_0392,Male,42,Free,North America,2023-02-01,true
+user_0393,Other,35,Enterprise,Europe,2022-12-14,false
+user_0394,Female,29,Premium,Latin America,2023-04-27,true
+user_0395,Male,31,Free,Asia Pacific,2022-07-09,true
+user_0396,Female,37,Trial,North America,2023-09-21,true
+user_0397,Male,25,Premium,Europe,2022-02-03,true
+user_0398,Female,43,Free,Asia Pacific,2023-06-15,false
+user_0399,Male,30,Enterprise,Latin America,2022-08-27,true
+user_0400,Female,36,Premium,North America,2023-01-09,true
+user_0401,Male,28,Free,Europe,2022-11-21,true
+user_0402,Other,41,Trial,Asia Pacific,2023-03-05,true
+user_0403,Female,33,Premium,North America,2022-05-17,false
+user_0404,Male,26,Free,Latin America,2023-06-29,true
+user_0405,Female,39,Enterprise,Europe,2022-09-11,true
+user_0406,Male,32,Premium,Asia Pacific,2023-02-23,true
+user_0407,Female,27,Free,North America,2022-12-06,true
+user_0408,Male,44,Trial,Europe,2023-04-19,false
+user_0409,Female,31,Premium,Latin America,2022-06-01,true
+user_0410,Male,35,Free,Asia Pacific,2023-08-13,true
+user_0411,Other,38,Enterprise,North America,2022-01-25,true
+user_0412,Female,24,Premium,Europe,2023-09-07,true
+user_0413,Male,40,Free,Asia Pacific,2022-03-21,false
+user_0414,Female,29,Trial,Latin America,2023-06-03,true
+user_0415,Male,33,Premium,North America,2022-08-15,true
+user_0416,Female,27,Free,Europe,2023-01-27,true
+user_0417,Male,42,Enterprise,Asia Pacific,2022-11-09,true
+user_0418,Female,34,Premium,North America,2023-03-23,false
+user_0419,Male,30,Free,Latin America,2022-05-05,true
+user_0420,Other,36,Trial,Europe,2023-07-17,true
+user_0421,Female,28,Premium,Asia Pacific,2022-09-29,true
+user_0422,Male,41,Free,North America,2023-02-11,true
+user_0423,Female,25,Enterprise,Europe,2022-12-24,false
+user_0424,Male,37,Premium,Latin America,2023-04-07,true
+user_0425,Female,32,Free,Asia Pacific,2022-06-19,true
+user_0426,Male,26,Trial,North America,2023-09-01,true
+user_0427,Female,43,Premium,Europe,2022-02-13,true
+user_0428,Male,29,Free,Asia Pacific,2023-06-25,false
+user_0429,Other,35,Enterprise,Latin America,2022-09-07,true
+user_0430,Female,31,Premium,North America,2023-01-19,true
+user_0431,Male,38,Free,Europe,2022-11-01,true
+user_0432,Female,24,Trial,Asia Pacific,2023-03-15,true
+user_0433,Male,40,Premium,North America,2022-05-27,false
+user_0434,Female,33,Free,Latin America,2023-08-09,true
+user_0435,Male,27,Enterprise,Europe,2022-07-21,true
+user_0436,Female,42,Premium,Asia Pacific,2023-02-03,true
+user_0437,Male,34,Free,North America,2022-12-16,true
+user_0438,Other,28,Trial,Europe,2023-03-30,false
+user_0439,Female,36,Premium,Latin America,2022-06-11,true
+user_0440,Male,30,Free,Asia Pacific,2023-08-23,true
+user_0441,Female,39,Enterprise,North America,2022-01-05,true
+user_0442,Male,25,Premium,Europe,2023-09-17,true
+user_0443,Female,41,Free,Asia Pacific,2022-03-31,false
+user_0444,Male,32,Trial,Latin America,2023-06-12,true
+user_0445,Female,26,Premium,North America,2022-08-24,true
+user_0446,Male,37,Free,Europe,2023-01-06,true
+user_0447,Other,44,Enterprise,Asia Pacific,2022-11-18,true
+user_0448,Female,29,Premium,North America,2023-03-02,false
+user_0449,Male,35,Free,Latin America,2022-05-14,true
+user_0450,Female,31,Trial,Europe,2023-07-26,true
+user_0451,Male,28,Premium,Asia Pacific,2022-10-08,true
+user_0452,Female,40,Free,North America,2023-02-20,true
+user_0453,Male,33,Enterprise,Europe,2022-12-03,false
+user_0454,Female,24,Premium,Latin America,2023-04-16,true
+user_0455,Male,38,Free,Asia Pacific,2022-06-28,true
+user_0456,Other,27,Trial,North America,2023-09-10,true
+user_0457,Female,42,Premium,Europe,2022-02-22,true
+user_0458,Male,34,Free,Asia Pacific,2023-06-04,false
+user_0459,Female,30,Enterprise,Latin America,2022-09-16,true
+user_0460,Male,36,Premium,North America,2022-12-29,true
+user_0461,Female,26,Free,Europe,2022-11-10,true
+user_0462,Male,39,Trial,Asia Pacific,2023-03-24,true
+user_0463,Female,32,Premium,North America,2022-06-06,false
+user_0464,Male,28,Free,Latin America,2023-08-18,true
+user_0465,Other,41,Enterprise,Europe,2022-04-01,true
+user_0466,Female,35,Premium,Asia Pacific,2023-07-13,true
+user_0467,Male,25,Free,North America,2022-12-25,true
+user_0468,Female,43,Trial,Europe,2023-02-07,false
+user_0469,Male,29,Premium,Latin America,2022-05-21,true
+user_0470,Female,37,Free,Asia Pacific,2023-09-02,true
+user_0471,Male,31,Enterprise,North America,2022-01-14,true
+user_0472,Female,24,Premium,Europe,2023-03-28,true
+user_0473,Male,38,Free,Asia Pacific,2022-07-10,false
+user_0474,Other,33,Trial,Latin America,2023-06-22,true
+user_0475,Female,27,Premium,North America,2022-09-04,true
+user_0476,Male,40,Free,Europe,2023-01-16,true
+user_0477,Female,34,Enterprise,Asia Pacific,2022-10-29,true
+user_0478,Male,26,Premium,North America,2023-03-12,false
+user_0479,Female,42,Free,Latin America,2022-05-24,true
+user_0480,Male,30,Trial,Europe,2023-08-06,true
+user_0481,Female,36,Premium,Asia Pacific,2022-10-18,true
+user_0482,Male,28,Free,North America,2023-01-31,true
+user_0483,Other,44,Enterprise,Europe,2022-12-13,false
+user_0484,Female,32,Premium,Latin America,2023-04-26,true
+user_0485,Male,25,Free,Asia Pacific,2022-07-08,true
+user_0486,Female,39,Trial,North America,2023-09-20,true
+user_0487,Male,31,Premium,Europe,2022-02-02,true
+user_0488,Female,35,Free,Asia Pacific,2023-06-14,false
+user_0489,Male,27,Enterprise,Latin America,2022-08-26,true
+user_0490,Female,41,Premium,North America,2023-01-08,true
+user_0491,Male,33,Free,Europe,2022-11-20,true
+user_0492,Other,29,Trial,Asia Pacific,2023-03-04,true
+user_0493,Female,37,Premium,North America,2022-05-16,false
+user_0494,Male,24,Free,Latin America,2023-06-28,true
+user_0495,Female,38,Enterprise,Europe,2022-09-10,true
+user_0496,Male,30,Premium,Asia Pacific,2023-02-22,true
+user_0497,Female,34,Free,North America,2022-12-05,true
+user_0498,Male,26,Trial,Europe,2023-04-18,false
+user_0499,Female,40,Premium,Latin America,2022-05-31,true
+user_0500,Male,32,Free,Asia Pacific,2023-08-12,true
