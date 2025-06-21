@@ -1,0 +1,125 @@
+user_id,funnel_step,timestamp,workflow_id,step_order
+user_0001,Workflow Start,2024-01-15 10:12:00,user_0001_attempt_1,1
+user_0001,Data Input,2024-01-15 10:15:00,user_0001_attempt_1,2
+user_0001,Configuration,2024-01-15 10:22:00,user_0001_attempt_1,3
+user_0001,Preview Generated,2024-01-15 10:28:00,user_0001_attempt_1,4
+user_0001,Validation Passed,2024-01-15 10:35:00,user_0001_attempt_1,5
+user_0001,Final Review,2024-01-15 10:42:00,user_0001_attempt_1,6
+user_0001,Workflow Complete,2024-01-15 10:48:00,user_0001_attempt_1,7
+user_0001,Workflow Start,2024-01-22 14:08:00,user_0001_attempt_2,1
+user_0001,Data Input,2024-01-22 14:13:00,user_0001_attempt_2,2
+user_0001,Configuration,2024-01-22 14:20:00,user_0001_attempt_2,3
+user_0001,Preview Generated,2024-01-22 14:26:00,user_0001_attempt_2,4
+user_0002,Workflow Start,2024-01-08 09:05:00,user_0002_attempt_1,1
+user_0002,Data Input,2024-01-08 09:10:00,user_0002_attempt_1,2
+user_0002,Configuration,2024-01-08 09:17:00,user_0002_attempt_1,3
+user_0002,Preview Generated,2024-01-08 09:23:00,user_0002_attempt_1,4
+user_0002,Validation Passed,2024-01-08 09:30:00,user_0002_attempt_1,5
+user_0002,Final Review,2024-01-08 09:37:00,user_0002_attempt_1,6
+user_0002,Workflow Complete,2024-01-08 09:43:00,user_0002_attempt_1,7
+user_0003,Workflow Start,2024-01-25 11:30:00,user_0003_attempt_1,1
+user_0003,Data Input,2024-01-25 11:35:00,user_0003_attempt_1,2
+user_0003,Configuration,2024-01-25 11:42:00,user_0003_attempt_1,3
+user_0003,Preview Generated,2024-01-25 11:48:00,user_0003_attempt_1,4
+user_0003,Validation Passed,2024-01-25 11:55:00,user_0003_attempt_1,5
+user_0004,Workflow Start,2024-01-12 16:15:00,user_0004_attempt_1,1
+user_0004,Data Input,2024-01-12 16:20:00,user_0004_attempt_1,2
+user_0004,Configuration,2024-01-12 16:27:00,user_0004_attempt_1,3
+user_0004,Workflow Start,2024-01-28 13:45:00,user_0004_attempt_2,1
+user_0004,Data Input,2024-01-28 13:50:00,user_0004_attempt_2,2
+user_0004,Configuration,2024-01-28 13:57:00,user_0004_attempt_2,3
+user_0004,Preview Generated,2024-01-28 14:03:00,user_0004_attempt_2,4
+user_0004,Validation Passed,2024-01-28 14:10:00,user_0004_attempt_2,5
+user_0004,Final Review,2024-01-28 14:17:00,user_0004_attempt_2,6
+user_0005,Workflow Start,2024-01-19 08:22:00,user_0005_attempt_1,1
+user_0005,Data Input,2024-01-19 08:27:00,user_0005_attempt_1,2
+user_0005,Configuration,2024-01-19 08:34:00,user_0005_attempt_1,3
+user_0005,Preview Generated,2024-01-19 08:40:00,user_0005_attempt_1,4
+user_0005,Validation Passed,2024-01-19 08:47:00,user_0005_attempt_1,5
+user_0005,Final Review,2024-01-19 08:54:00,user_0005_attempt_1,6
+user_0005,Workflow Complete,2024-01-19 09:00:00,user_0005_attempt_1,7
+user_0006,Workflow Start,2024-01-05 15:38:00,user_0006_attempt_1,1
+user_0006,Data Input,2024-01-05 15:43:00,user_0006_attempt_1,2
+user_0006,Configuration,2024-01-05 15:50:00,user_0006_attempt_1,3
+user_0006,Preview Generated,2024-01-05 15:56:00,user_0006_attempt_1,4
+user_0007,Workflow Start,2024-01-26 12:11:00,user_0007_attempt_1,1
+user_0007,Data Input,2024-01-26 12:16:00,user_0007_attempt_1,2
+user_0007,Workflow Start,2024-02-02 10:55:00,user_0007_attempt_2,1
+user_0007,Data Input,2024-02-02 11:00:00,user_0007_attempt_2,2
+user_0007,Configuration,2024-02-02 11:07:00,user_0007_attempt_2,3
+user_0007,Preview Generated,2024-02-02 11:13:00,user_0007_attempt_2,4
+user_0007,Validation Passed,2024-02-02 11:20:00,user_0007_attempt_2,5
+user_0008,Workflow Start,2024-01-13 14:27:00,user_0008_attempt_1,1
+user_0008,Data Input,2024-01-13 14:32:00,user_0008_attempt_1,2
+user_0008,Configuration,2024-01-13 14:39:00,user_0008_attempt_1,3
+user_0008,Preview Generated,2024-01-13 14:45:00,user_0008_attempt_1,4
+user_0008,Validation Passed,2024-01-13 14:52:00,user_0008_attempt_1,5
+user_0008,Final Review,2024-01-13 14:59:00,user_0008_attempt_1,6
+user_0008,Workflow Complete,2024-01-13 15:05:00,user_0008_attempt_1,7
+user_0009,Workflow Start,2024-01-30 09:44:00,user_0009_attempt_1,1
+user_0009,Data Input,2024-01-30 09:49:00,user_0009_attempt_1,2
+user_0009,Configuration,2024-01-30 09:56:00,user_0009_attempt_1,3
+user_0010,Workflow Start,2024-01-17 11:33:00,user_0010_attempt_1,1
+user_0010,Data Input,2024-01-17 11:38:00,user_0010_attempt_1,2
+user_0010,Configuration,2024-01-17 11:45:00,user_0010_attempt_1,3
+user_0010,Preview Generated,2024-01-17 11:51:00,user_0010_attempt_1,4
+user_0010,Validation Passed,2024-01-17 11:58:00,user_0010_attempt_1,5
+user_0010,Final Review,2024-01-17 12:05:00,user_0010_attempt_1,6
+user_0010,Workflow Complete,2024-01-17 12:11:00,user_0010_attempt_1,7
+user_0010,Workflow Start,2024-01-24 16:20:00,user_0010_attempt_2,1
+user_0010,Data Input,2024-01-24 16:25:00,user_0010_attempt_2,2
+user_0010,Configuration,2024-01-24 16:32:00,user_0010_attempt_2,3
+user_0011,Workflow Start,2024-01-03 13:07:00,user_0011_attempt_1,1
+user_0011,Data Input,2024-01-03 13:12:00,user_0011_attempt_1,2
+user_0011,Configuration,2024-01-03 13:19:00,user_0011_attempt_1,3
+user_0011,Preview Generated,2024-01-03 13:25:00,user_0011_attempt_1,4
+user_0012,Workflow Start,2024-01-24 08:51:00,user_0012_attempt_1,1
+user_0012,Data Input,2024-01-24 08:56:00,user_0012_attempt_1,2
+user_0012,Configuration,2024-01-24 09:03:00,user_0012_attempt_1,3
+user_0012,Preview Generated,2024-01-24 09:09:00,user_0012_attempt_1,4
+user_0012,Validation Passed,2024-01-24 09:16:00,user_0012_attempt_1,5
+user_0012,Final Review,2024-01-24 09:23:00,user_0012_attempt_1,6
+user_0012,Workflow Complete,2024-01-24 09:29:00,user_0012_attempt_1,7
+user_0013,Workflow Start,2024-01-11 15:16:00,user_0013_attempt_1,1
+user_0013,Data Input,2024-01-11 15:21:00,user_0013_attempt_1,2
+user_0013,Configuration,2024-01-11 15:28:00,user_0013_attempt_1,3
+user_0013,Preview Generated,2024-01-11 15:34:00,user_0013_attempt_1,4
+user_0013,Validation Passed,2024-01-11 15:41:00,user_0013_attempt_1,5
+user_0014,Workflow Start,2024-01-31 12:02:00,user_0014_attempt_1,1
+user_0014,Data Input,2024-01-31 12:07:00,user_0014_attempt_1,2
+user_0014,Workflow Start,2024-02-07 10:38:00,user_0014_attempt_2,1
+user_0014,Data Input,2024-02-07 10:43:00,user_0014_attempt_2,2
+user_0014,Configuration,2024-02-07 10:50:00,user_0014_attempt_2,3
+user_0014,Preview Generated,2024-02-07 10:56:00,user_0014_attempt_2,4
+user_0015,Workflow Start,2024-01-18 14:25:00,user_0015_attempt_1,1
+user_0015,Data Input,2024-01-18 14:30:00,user_0015_attempt_1,2
+user_0015,Configuration,2024-01-18 14:37:00,user_0015_attempt_1,3
+user_0015,Preview Generated,2024-01-18 14:43:00,user_0015_attempt_1,4
+user_0015,Validation Passed,2024-01-18 14:50:00,user_0015_attempt_1,5
+user_0015,Final Review,2024-01-18 14:57:00,user_0015_attempt_1,6
+user_0015,Workflow Complete,2024-01-18 15:03:00,user_0015_attempt_1,7
+user_0016,Workflow Start,2024-01-04 09:41:00,user_0016_attempt_1,1
+user_0016,Data Input,2024-01-04 09:46:00,user_0016_attempt_1,2
+user_0016,Configuration,2024-01-04 09:53:00,user_0016_attempt_1,3
+user_0017,Workflow Start,2024-01-25 11:14:00,user_0017_attempt_1,1
+user_0017,Data Input,2024-01-25 11:19:00,user_0017_attempt_1,2
+user_0017,Configuration,2024-01-25 11:26:00,user_0017_attempt_1,3
+user_0017,Preview Generated,2024-01-25 11:32:00,user_0017_attempt_1,4
+user_0017,Validation Passed,2024-01-25 11:39:00,user_0017_attempt_1,5
+user_0017,Final Review,2024-01-25 11:46:00,user_0017_attempt_1,6
+user_0018,Workflow Start,2024-01-12 16:58:00,user_0018_attempt_1,1
+user_0018,Data Input,2024-01-12 17:03:00,user_0018_attempt_1,2
+user_0018,Configuration,2024-01-12 17:10:00,user_0018_attempt_1,3
+user_0018,Preview Generated,2024-01-12 17:16:00,user_0018_attempt_1,4
+user_0019,Workflow Start,2024-01-29 08:35:00,user_0019_attempt_1,1
+user_0019,Data Input,2024-01-29 08:40:00,user_0019_attempt_1,2
+user_0019,Configuration,2024-01-29 08:47:00,user_0019_attempt_1,3
+user_0019,Preview Generated,2024-01-29 08:53:00,user_0019_attempt_1,4
+user_0019,Validation Passed,2024-01-29 09:00:00,user_0019_attempt_1,5
+user_0019,Final Review,2024-01-29 09:07:00,user_0019_attempt_1,6
+user_0019,Workflow Complete,2024-01-29 09:13:00,user_0019_attempt_1,7
+user_0020,Workflow Start,2024-01-16 13:19:00,user_0020_attempt_1,1
+user_0020,Data Input,2024-01-16 13:24:00,user_0020_attempt_1,2
+user_0020,Configuration,2024-01-16 13:31:00,user_0020_attempt_1,3
+user_0020,Preview Generated,2024-01-16 13:37:00,user_0020_attempt_1,4
+user_0020,Validation Passed,2024-01-16 13:44:00,user_0020_attempt_1,5
