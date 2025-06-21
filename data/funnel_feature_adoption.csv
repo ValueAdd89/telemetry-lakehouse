@@ -1,0 +1,232 @@
+user_id,funnel_step,timestamp,feature_name,step_order
+user_0001,Feature Discovery,2024-01-15 08:00:00,create_report,1
+user_0001,Feature Click,2024-01-16 08:00:00,create_report,2
+user_0001,Feature Trial,2024-01-18 08:00:00,create_report,3
+user_0001,Feature Regular Use,2024-01-21 08:00:00,create_report,4
+user_0001,Feature Mastery,2024-01-26 08:00:00,create_report,5
+user_0002,Feature Discovery,2024-01-08 08:00:00,create_report,1
+user_0002,Feature Click,2024-01-09 08:00:00,create_report,2
+user_0002,Feature Trial,2024-01-11 08:00:00,create_report,3
+user_0002,Feature Regular Use,2024-01-14 08:00:00,create_report,4
+user_0003,Feature Discovery,2024-01-22 08:00:00,create_report,1
+user_0003,Feature Click,2024-01-23 08:00:00,create_report,2
+user_0003,Feature Trial,2024-01-25 08:00:00,create_report,3
+user_0004,Feature Discovery,2024-01-12 08:00:00,create_report,1
+user_0004,Feature Click,2024-01-13 08:00:00,create_report,2
+user_0005,Feature Discovery,2024-01-28 08:00:00,create_report,1
+user_0005,Feature Click,2024-01-29 08:00:00,create_report,2
+user_0005,Feature Trial,2024-01-31 08:00:00,create_report,3
+user_0005,Feature Regular Use,2024-02-03 08:00:00,create_report,4
+user_0005,Feature Mastery,2024-02-08 08:00:00,create_report,5
+user_0005,Feature Advocacy,2024-02-15 08:00:00,create_report,6
+user_0006,Feature Discovery,2024-01-19 08:00:00,create_report,1
+user_0006,Feature Click,2024-01-20 08:00:00,create_report,2
+user_0006,Feature Trial,2024-01-22 08:00:00,create_report,3
+user_0007,Feature Discovery,2024-01-05 08:00:00,create_report,1
+user_0007,Feature Click,2024-01-06 08:00:00,create_report,2
+user_0008,Feature Discovery,2024-01-26 08:00:00,create_report,1
+user_0008,Feature Click,2024-01-27 08:00:00,create_report,2
+user_0008,Feature Trial,2024-01-29 08:00:00,create_report,3
+user_0008,Feature Regular Use,2024-02-01 08:00:00,create_report,4
+user_0009,Feature Discovery,2024-01-16 08:00:00,create_report,1
+user_0009,Feature Click,2024-01-17 08:00:00,create_report,2
+user_0009,Feature Trial,2024-01-19 08:00:00,create_report,3
+user_0010,Feature Discovery,2024-01-03 08:00:00,create_report,1
+user_0010,Feature Click,2024-01-04 08:00:00,create_report,2
+user_0010,Feature Trial,2024-01-06 08:00:00,create_report,3
+user_0010,Feature Regular Use,2024-01-09 08:00:00,create_report,4
+user_0010,Feature Mastery,2024-01-14 08:00:00,create_report,5
+user_0011,Feature Discovery,2024-01-24 08:00:00,create_report,1
+user_0011,Feature Click,2024-01-25 08:00:00,create_report,2
+user_0012,Feature Discovery,2024-01-13 08:00:00,create_report,1
+user_0012,Feature Click,2024-01-14 08:00:00,create_report,2
+user_0012,Feature Trial,2024-01-16 08:00:00,create_report,3
+user_0013,Feature Discovery,2024-01-30 08:00:00,create_report,1
+user_0013,Feature Click,2024-01-31 08:00:00,create_report,2
+user_0013,Feature Trial,2024-02-02 08:00:00,create_report,3
+user_0013,Feature Regular Use,2024-02-05 08:00:00,create_report,4
+user_0014,Feature Discovery,2024-01-20 08:00:00,create_report,1
+user_0014,Feature Click,2024-01-21 08:00:00,create_report,2
+user_0014,Feature Trial,2024-01-23 08:00:00,create_report,3
+user_0015,Feature Discovery,2024-01-07 08:00:00,create_report,1
+user_0015,Feature Click,2024-01-08 08:00:00,create_report,2
+user_0016,Feature Discovery,2024-01-27 08:00:00,create_report,1
+user_0016,Feature Click,2024-01-28 08:00:00,create_report,2
+user_0016,Feature Trial,2024-01-30 08:00:00,create_report,3
+user_0016,Feature Regular Use,2024-02-02 08:00:00,create_report,4
+user_0016,Feature Mastery,2024-02-07 08:00:00,create_report,5
+user_0016,Feature Advocacy,2024-02-14 08:00:00,create_report,6
+user_0017,Feature Discovery,2024-01-17 08:00:00,create_report,1
+user_0017,Feature Click,2024-01-18 08:00:00,create_report,2
+user_0017,Feature Trial,2024-01-20 08:00:00,create_report,3
+user_0018,Feature Discovery,2024-01-04 08:00:00,create_report,1
+user_0018,Feature Click,2024-01-05 08:00:00,create_report,2
+user_0019,Feature Discovery,2024-01-25 08:00:00,create_report,1
+user_0019,Feature Click,2024-01-26 08:00:00,create_report,2
+user_0019,Feature Trial,2024-01-28 08:00:00,create_report,3
+user_0019,Feature Regular Use,2024-01-31 08:00:00,create_report,4
+user_0020,Feature Discovery,2024-01-14 08:00:00,create_report,1
+user_0020,Feature Click,2024-01-15 08:00:00,create_report,2
+user_0020,Feature Trial,2024-01-17 08:00:00,create_report,3
+user_0021,Feature Discovery,2024-01-31 08:00:00,export_data,1
+user_0021,Feature Click,2024-02-01 08:00:00,export_data,2
+user_0021,Feature Trial,2024-02-03 08:00:00,export_data,3
+user_0022,Feature Discovery,2024-01-18 08:00:00,export_data,1
+user_0022,Feature Click,2024-01-19 08:00:00,export_data,2
+user_0023,Feature Discovery,2024-01-08 08:00:00,export_data,1
+user_0023,Feature Click,2024-01-09 08:00:00,export_data,2
+user_0023,Feature Trial,2024-01-11 08:00:00,export_data,3
+user_0023,Feature Regular Use,2024-01-14 08:00:00,export_data,4
+user_0024,Feature Discovery,2024-01-29 08:00:00,export_data,1
+user_0024,Feature Click,2024-01-30 08:00:00,export_data,2
+user_0024,Feature Trial,2024-02-01 08:00:00,export_data,3
+user_0025,Feature Discovery,2024-01-16 08:00:00,export_data,1
+user_0025,Feature Click,2024-01-17 08:00:00,export_data,2
+user_0025,Feature Trial,2024-01-19 08:00:00,export_data,3
+user_0025,Feature Regular Use,2024-01-22 08:00:00,export_data,4
+user_0025,Feature Mastery,2024-01-27 08:00:00,export_data,5
+user_0026,Feature Discovery,2024-01-06 08:00:00,export_data,1
+user_0026,Feature Click,2024-01-07 08:00:00,export_data,2
+user_0027,Feature Discovery,2024-01-27 08:00:00,export_data,1
+user_0027,Feature Click,2024-01-28 08:00:00,export_data,2
+user_0027,Feature Trial,2024-01-30 08:00:00,export_data,3
+user_0028,Feature Discovery,2024-01-14 08:00:00,export_data,1
+user_0028,Feature Click,2024-01-15 08:00:00,export_data,2
+user_0028,Feature Trial,2024-01-17 08:00:00,export_data,3
+user_0028,Feature Regular Use,2024-01-20 08:00:00,export_data,4
+user_0029,Feature Discovery,2024-01-04 08:00:00,export_data,1
+user_0029,Feature Click,2024-01-05 08:00:00,export_data,2
+user_0029,Feature Trial,2024-01-07 08:00:00,export_data,3
+user_0030,Feature Discovery,2024-01-25 08:00:00,export_data,1
+user_0030,Feature Click,2024-01-26 08:00:00,export_data,2
+user_0031,Feature Discovery,2024-01-12 08:00:00,export_data,1
+user_0031,Feature Click,2024-01-13 08:00:00,export_data,2
+user_0031,Feature Trial,2024-01-15 08:00:00,export_data,3
+user_0031,Feature Regular Use,2024-01-18 08:00:00,export_data,4
+user_0031,Feature Mastery,2024-01-23 08:00:00,export_data,5
+user_0031,Feature Advocacy,2024-01-30 08:00:00,export_data,6
+user_0032,Feature Discovery,2024-01-02 08:00:00,export_data,1
+user_0032,Feature Click,2024-01-03 08:00:00,export_data,2
+user_0032,Feature Trial,2024-01-05 08:00:00,export_data,3
+user_0033,Feature Discovery,2024-01-23 08:00:00,export_data,1
+user_0033,Feature Click,2024-01-24 08:00:00,export_data,2
+user_0034,Feature Discovery,2024-01-10 08:00:00,export_data,1
+user_0034,Feature Click,2024-01-11 08:00:00,export_data,2
+user_0034,Feature Trial,2024-01-13 08:00:00,export_data,3
+user_0034,Feature Regular Use,2024-01-16 08:00:00,export_data,4
+user_0035,Feature Discovery,2024-01-31 08:00:00,export_data,1
+user_0035,Feature Click,2024-02-01 08:00:00,export_data,2
+user_0035,Feature Trial,2024-02-03 08:00:00,export_data,3
+user_0036,Feature Discovery,2024-01-18 08:00:00,export_data,1
+user_0036,Feature Click,2024-01-19 08:00:00,export_data,2
+user_0037,Feature Discovery,2024-01-08 08:00:00,export_data,1
+user_0037,Feature Click,2024-01-09 08:00:00,export_data,2
+user_0037,Feature Trial,2024-01-11 08:00:00,export_data,3
+user_0037,Feature Regular Use,2024-01-14 08:00:00,export_data,4
+user_0037,Feature Mastery,2024-01-19 08:00:00,export_data,5
+user_0038,Feature Discovery,2024-01-29 08:00:00,export_data,1
+user_0038,Feature Click,2024-01-30 08:00:00,export_data,2
+user_0038,Feature Trial,2024-02-01 08:00:00,export_data,3
+user_0039,Feature Discovery,2024-01-16 08:00:00,export_data,1
+user_0039,Feature Click,2024-01-17 08:00:00,export_data,2
+user_0040,Feature Discovery,2024-01-06 08:00:00,export_data,1
+user_0040,Feature Click,2024-01-07 08:00:00,export_data,2
+user_0040,Feature Trial,2024-01-09 08:00:00,export_data,3
+user_0040,Feature Regular Use,2024-01-12 08:00:00,export_data,4
+user_0041,Feature Discovery,2024-01-22 08:00:00,team_invite,1
+user_0041,Feature Click,2024-01-23 08:00:00,team_invite,2
+user_0041,Feature Trial,2024-01-25 08:00:00,team_invite,3
+user_0042,Feature Discovery,2024-01-09 08:00:00,team_invite,1
+user_0042,Feature Click,2024-01-10 08:00:00,team_invite,2
+user_0043,Feature Discovery,2024-01-30 08:00:00,team_invite,1
+user_0043,Feature Click,2024-01-31 08:00:00,team_invite,2
+user_0043,Feature Trial,2024-02-02 08:00:00,team_invite,3
+user_0043,Feature Regular Use,2024-02-05 08:00:00,team_invite,4
+user_0044,Feature Discovery,2024-01-17 08:00:00,team_invite,1
+user_0044,Feature Click,2024-01-18 08:00:00,team_invite,2
+user_0044,Feature Trial,2024-01-20 08:00:00,team_invite,3
+user_0045,Feature Discovery,2024-01-07 08:00:00,team_invite,1
+user_0045,Feature Click,2024-01-08 08:00:00,team_invite,2
+user_0046,Feature Discovery,2024-01-28 08:00:00,team_invite,1
+user_0046,Feature Click,2024-01-29 08:00:00,team_invite,2
+user_0046,Feature Trial,2024-01-31 08:00:00,team_invite,3
+user_0046,Feature Regular Use,2024-02-03 08:00:00,team_invite,4
+user_0046,Feature Mastery,2024-02-08 08:00:00,team_invite,5
+user_0047,Feature Discovery,2024-01-15 08:00:00,team_invite,1
+user_0047,Feature Click,2024-01-16 08:00:00,team_invite,2
+user_0047,Feature Trial,2024-01-18 08:00:00,team_invite,3
+user_0048,Feature Discovery,2024-01-05 08:00:00,team_invite,1
+user_0048,Feature Click,2024-01-06 08:00:00,team_invite,2
+user_0049,Feature Discovery,2024-01-26 08:00:00,team_invite,1
+user_0049,Feature Click,2024-01-27 08:00:00,team_invite,2
+user_0049,Feature Trial,2024-01-29 08:00:00,team_invite,3
+user_0049,Feature Regular Use,2024-02-01 08:00:00,team_invite,4
+user_0050,Feature Discovery,2024-01-13 08:00:00,team_invite,1
+user_0050,Feature Click,2024-01-14 08:00:00,team_invite,2
+user_0050,Feature Trial,2024-01-16 08:00:00,team_invite,3
+user_0051,Feature Discovery,2024-01-03 08:00:00,api_call,1
+user_0051,Feature Click,2024-01-04 08:00:00,api_call,2
+user_0051,Feature Trial,2024-01-06 08:00:00,api_call,3
+user_0052,Feature Discovery,2024-01-24 08:00:00,api_call,1
+user_0052,Feature Click,2024-01-25 08:00:00,api_call,2
+user_0053,Feature Discovery,2024-01-11 08:00:00,api_call,1
+user_0053,Feature Click,2024-01-12 08:00:00,api_call,2
+user_0053,Feature Trial,2024-01-14 08:00:00,api_call,3
+user_0053,Feature Regular Use,2024-01-17 08:00:00,api_call,4
+user_0054,Feature Discovery,2024-01-01 08:00:00,api_call,1
+user_0054,Feature Click,2024-01-02 08:00:00,api_call,2
+user_0054,Feature Trial,2024-01-04 08:00:00,api_call,3
+user_0055,Feature Discovery,2024-01-22 08:00:00,api_call,1
+user_0055,Feature Click,2024-01-23 08:00:00,api_call,2
+user_0055,Feature Trial,2024-01-25 08:00:00,api_call,3
+user_0055,Feature Regular Use,2024-01-28 08:00:00,api_call,4
+user_0055,Feature Mastery,2024-02-02 08:00:00,api_call,5
+user_0056,Feature Discovery,2024-01-09 08:00:00,api_call,1
+user_0056,Feature Click,2024-01-10 08:00:00,api_call,2
+user_0057,Feature Discovery,2024-01-30 08:00:00,api_call,1
+user_0057,Feature Click,2024-01-31 08:00:00,api_call,2
+user_0057,Feature Trial,2024-02-02 08:00:00,api_call,3
+user_0058,Feature Discovery,2024-01-17 08:00:00,api_call,1
+user_0058,Feature Click,2024-01-18 08:00:00,api_call,2
+user_0058,Feature Trial,2024-01-20 08:00:00,api_call,3
+user_0058,Feature Regular Use,2024-01-23 08:00:00,api_call,4
+user_0059,Feature Discovery,2024-01-07 08:00:00,api_call,1
+user_0059,Feature Click,2024-01-08 08:00:00,api_call,2
+user_0059,Feature Trial,2024-01-10 08:00:00,api_call,3
+user_0060,Feature Discovery,2024-01-28 08:00:00,api_call,1
+user_0060,Feature Click,2024-01-29 08:00:00,api_call,2
+user_0061,Feature Discovery,2024-01-15 08:00:00,chart_create,1
+user_0061,Feature Click,2024-01-16 08:00:00,chart_create,2
+user_0061,Feature Trial,2024-01-18 08:00:00,chart_create,3
+user_0061,Feature Regular Use,2024-01-21 08:00:00,chart_create,4
+user_0061,Feature Mastery,2024-01-26 08:00:00,chart_create,5
+user_0061,Feature Advocacy,2024-02-02 08:00:00,chart_create,6
+user_0062,Feature Discovery,2024-01-05 08:00:00,chart_create,1
+user_0062,Feature Click,2024-01-06 08:00:00,chart_create,2
+user_0062,Feature Trial,2024-01-08 08:00:00,chart_create,3
+user_0063,Feature Discovery,2024-01-26 08:00:00,chart_create,1
+user_0063,Feature Click,2024-01-27 08:00:00,chart_create,2
+user_0064,Feature Discovery,2024-01-13 08:00:00,chart_create,1
+user_0064,Feature Click,2024-01-14 08:00:00,chart_create,2
+user_0064,Feature Trial,2024-01-16 08:00:00,chart_create,3
+user_0064,Feature Regular Use,2024-01-19 08:00:00,chart_create,4
+user_0065,Feature Discovery,2024-01-03 08:00:00,chart_create,1
+user_0065,Feature Click,2024-01-04 08:00:00,chart_create,2
+user_0065,Feature Trial,2024-01-06 08:00:00,chart_create,3
+user_0066,Feature Discovery,2024-01-24 08:00:00,chart_create,1
+user_0066,Feature Click,2024-01-25 08:00:00,chart_create,2
+user_0066,Feature Trial,2024-01-27 08:00:00,chart_create,3
+user_0066,Feature Regular Use,2024-01-30 08:00:00,chart_create,4
+user_0066,Feature Mastery,2024-02-04 08:00:00,chart_create,5
+user_0067,Feature Discovery,2024-01-11 08:00:00,chart_create,1
+user_0067,Feature Click,2024-01-12 08:00:00,chart_create,2
+user_0067,Feature Trial,2024-01-14 08:00:00,chart_create,3
+user_0068,Feature Discovery,2024-01-01 08:00:00,chart_create,1
+user_0068,Feature Click,2024-01-02 08:00:00,chart_create,2
+user_0069,Feature Discovery,2024-01-22 08:00:00,chart_create,1
+user_0069,Feature Click,2024-01-23 08:00:00,chart_create,2
+user_0069,Feature Trial,2024-01-25 08:00:00,chart_create,3
+user_0069,Feature Regular Use,2024-01-28 08:00:00,chart_create,4
+user_0070,Feature Discovery,2024-01-09 08:00:00,chart_create,1
+user_0070,Feature Click,2024-01-10 08:00:00,chart_create,2
+user_0070,Feature Trial,2024-01-12 08:00:00,chart_create,3
