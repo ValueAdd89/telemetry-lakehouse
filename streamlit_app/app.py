@@ -100,13 +100,21 @@ time_granularity = st.sidebar.selectbox(
     options=["Daily", "Weekly", "Monthly"]
 )
 
-# --- REFACTOR: Feature Single-Select Dropdown ---
-all_features_options = ['All'] + df_all_data['feature'].unique().tolist()
-selected_feature = st.sidebar.selectbox("Select Feature", options=all_features_options, index=0)
+# Feature Multiselect
+all_features = df_all_data['feature'].unique().tolist()
+selected_features = st.sidebar.selectbox("Select Feature", options=['All'] + all_features, index=0) # Changed to selectbox
+if selected_features == 'All':
+    features_to_filter = all_features
+else:
+    features_to_filter = [selected_features]
 
-# --- REFACTOR: User Single-Select Dropdown ---
-all_users_options = ['All'] + df_all_data['user_id'].unique().tolist()
-selected_user = st.sidebar.selectbox("Select User", options=all_users_options, index=0)
+# User Multiselect
+all_users = df_all_data['user_id'].unique().tolist()
+selected_user_single = st.sidebar.selectbox("Select User", options=['All'] + all_users, index=0) # Changed to selectbox
+if selected_user_single == 'All':
+    users_to_filter = all_users
+else:
+    users_to_filter = [selected_user_single]
 
 # Top N Features Slider
 top_n_features = st.sidebar.slider("Show Top N Features", min_value=5, max_value=20, value=10)
@@ -115,28 +123,21 @@ top_n_features = st.sidebar.slider("Show Top N Features", min_value=5, max_value
 # --- Apply Global Filters to DataFrames ---
 df_filtered = df_all_data[
     (df_all_data['window_start'] >= start_date) &
-    (df_all_data['window_start'] < end_date) 
+    (df_all_data['window_start'] < end_date) &
+    (df_all_data['feature'].isin(features_to_filter)) &
+    (df_all_data['user_id'].isin(users_to_filter))
 ].copy() 
 
-# Apply Feature Filter (if not 'All')
-if selected_feature != 'All':
-    df_filtered = df_filtered[df_filtered['feature'] == selected_feature].copy()
-
-# Apply User Filter (if not 'All')
-if selected_user != 'All':
-    df_filtered = df_filtered[df_filtered['user_id'] == selected_user].copy()
-
-
 # Filter session_funnel based on selected users and dates
-# session_funnel is filtered by user_id
 filtered_session_funnel = session_funnel_orig[
     (session_funnel_orig['session_start'] >= start_date) &
     (session_funnel_orig['session_start'] < end_date)
 ].copy()
-if selected_user != 'All': # Only filter session_funnel by user if a specific user is selected
-    filtered_session_funnel = filtered_session_funnel[filtered_session_funnel['user_id'] == selected_user].copy()
+if selected_user_single != 'All': # Only filter session_funnel by user if a specific user is selected
+    filtered_session_funnel = filtered_session_funnel[filtered_session_funnel['user_id'] == selected_user_single].copy()
 
-# --- REFACTOR: Helper function for filtering funnel data by user (single select) ---
+
+# Helper function for filtering funnel data by user (single select)
 def filter_funnel_by_user(df, user_id):
     if user_id == 'All':
         return df
@@ -148,13 +149,13 @@ def filter_funnel_by_user(df, user_id):
 filtered_funnels = {
     "Onboarding Funnel": filter_funnel_by_user(
         funnel_onboarding_orig[(funnel_onboarding_orig['timestamp'] >= start_date) & (funnel_onboarding_orig['timestamp'] < end_date)], 
-        selected_user),
+        selected_user_single),
     "Feature Adoption Funnel": filter_funnel_by_user(
         funnel_feature_adoption_orig[(funnel_feature_adoption_orig['timestamp'] >= start_date) & (funnel_feature_adoption_orig['timestamp'] < end_date)], 
-        selected_user),
+        selected_user_single),
     "Workflow Completion Funnel": filter_funnel_by_user(
         funnel_workflow_completion_orig[(funnel_workflow_completion_orig['timestamp'] >= start_date) & (funnel_workflow_completion_orig['timestamp'] < end_date)], 
-        selected_user)
+        selected_user_single)
 }
 
 
@@ -192,13 +193,13 @@ with tab1:
     # Aggregate data by selected granularity
     if time_granularity == "Daily":
         freq = 'D'
+        df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
     elif time_granularity == "Weekly":
         freq = 'W'
+        df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
     else: # Monthly
-        freq = 'MS' # Month start for better grouping
-
-    # Create a time_group column for aggregation
-    df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
+        # Use 'M' for period and then explicitly get start_time
+        df_filtered['time_group'] = df_filtered['window_start'].dt.to_period('M').dt.start_time
     
     events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
     events_over_time.columns = ['Date', 'Total Events']
@@ -237,7 +238,7 @@ with tab2:
             single_feature_time_agg.columns = ['Date', 'event_count']
 
             fig_time = px.line(single_feature_time_agg, x="Date", y="event_count",
-                            title=f"{selected_feature} Usage Over Time ({time_granularity})")
+                            title=f"'{selected_feature}' Usage Over Time ({time_granularity})") # Added quotes for clarity
             st.plotly_chart(fig_time, use_container_width=True)
 
             st.markdown("##### Raw Data for Selected Feature")
@@ -260,10 +261,9 @@ with tab3:
     st.markdown("---")
     st.subheader("User Activity Breakdown")
 
-    if selected_user == 'All':
+    if selected_user_single == 'All': # Use selected_user_single which comes from st.selectbox
         st.info("Displaying overall user activity. Select a specific user from the sidebar for a detailed breakdown.")
         
-        # --- REFACTOR: Show summary visualization for ALL users ---
         if not df_filtered.empty and 'user_id' in df_filtered.columns:
             user_total_events = df_filtered.groupby('user_id')['event_count'].sum().reset_index()
             user_total_events = user_total_events.sort_values('event_count', ascending=False)
@@ -287,11 +287,11 @@ with tab3:
         else:
             st.info("No user activity data to summarize for all users.")
 
-    else: # A specific user is selected
-        st.info(f"Displaying detailed activity for User: `{selected_user}`.")
-        user_data = df_filtered[df_filtered["user_id"] == selected_user].copy()
+    else: # A specific user is selected (selected_user_single)
+        st.info(f"Displaying detailed activity for User: `{selected_user_single}`.")
+        user_data = df_filtered[df_filtered["user_id"] == selected_user_single].copy()
         if not user_data.empty:
-            st.markdown(f"#### User: `{selected_user}`")
+            st.markdown(f"#### User: `{selected_user_single}`")
             
             user_total_events = user_data['event_count'].sum()
             user_unique_features = user_data['feature'].nunique()
@@ -301,14 +301,14 @@ with tab3:
 
             feature_usage_by_user = user_data.groupby('feature')['event_count'].sum().reset_index()
             fig_user_features = px.bar(feature_usage_by_user, x='feature', y='event_count',
-                                       title=f"Feature Usage for User {selected_user}", text='event_count')
+                                       title=f"Feature Usage for User {selected_user_single}", text='event_count')
             fig_user_features.update_traces(texttemplate='%{text}', textposition='outside')
             st.plotly_chart(fig_user_features, use_container_width=True)
             
             st.markdown("##### Raw Event Data for User")
             st.dataframe(user_data)
         else:
-            st.info(f"No data found for user `{selected_user}` with current filters.")
+            st.info(f"No data found for user `{selected_user_single}` with current filters.")
 
 
 # --- Tab 4: Top Features ---
@@ -372,7 +372,7 @@ with tab5:
 with tab6:
     st.header("Funnel Analysis")
 
-    funnel_options_map = { # Renamed to avoid clash with variable funnel_options below
+    funnel_options_map = { 
         "Onboarding Funnel": filtered_funnels["Onboarding Funnel"], 
         "Feature Adoption Funnel": filtered_funnels["Feature Adoption Funnel"],
         "Workflow Completion Funnel": filtered_funnels["Workflow Completion Funnel"]
@@ -394,16 +394,14 @@ with tab6:
                 funnel_step_order = ["Workflow Start", "Data Input", "Configuration", 
                                      "Preview Generated", "Validation Passed", "Final Review", "Workflow Complete"]
             else:
-                funnel_step_order = df_funnel["funnel_step"].unique().tolist() # Default to alphabetical if not defined
+                funnel_step_order = df_funnel["funnel_step"].unique().tolist() 
 
             
             funnel_counts = df_funnel.groupby("funnel_step")["user_id"].nunique().reset_index()
             
-            # Ensure correct ordering of steps
             funnel_counts['funnel_step'] = pd.Categorical(funnel_counts['funnel_step'], categories=funnel_step_order, ordered=True)
             funnel_counts = funnel_counts.sort_values("funnel_step", ascending=True) 
 
-            # Filter out steps not present in the filtered data for this specific funnel
             funnel_counts = funnel_counts.dropna(subset=['funnel_step'])
 
             funnel_counts.columns = ["Funnel Step", "User Count"]
