@@ -1,0 +1,1 @@
+-- Sample Trino queries for feature usage

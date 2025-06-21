@@ -1,0 +1,28 @@
+
+version: 2
+
+models:
+  - name: feature_events
+    description: "Aggregated telemetry events grouped by user and feature"
+    columns:
+      - name: user_id
+        description: "Unique identifier for a user"
+      - name: feature
+        description: "Name of the feature interacted with"
+      - name: hourly_events
+        description: "Number of hourly feature events per user"
+
+  - name: top_features
+    description: "Top 10 features by overall usage"
+
+  - name: session_funnels
+    description: "User-level feature count and session start/end timestamps"
+    columns:
+      - name: user_id
+        description: "User ID"
+      - name: session_start
+        description: "Earliest feature interaction timestamp"
+      - name: session_end
+        description: "Latest feature interaction timestamp"
+      - name: feature_count
+        description: "How many different features were used in a session"

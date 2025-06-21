@@ -1,0 +1,1 @@
+# Script to simulate and ingest event logs into the lake

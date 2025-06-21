@@ -1,0 +1,6 @@
+user_id,feature,window_start,event_count
+u1,search,2025-06-01 12:00:00,5
+u1,explore,2025-06-01 12:00:00,3
+u2,search,2025-06-01 13:00:00,7
+u3,recommend,2025-06-01 13:00:00,2
+u3,search,2025-06-01 14:00:00,6

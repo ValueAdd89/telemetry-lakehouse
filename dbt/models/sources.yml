@@ -1,0 +1,10 @@
+
+version: 2
+
+sources:
+  - name: telemetry
+    database: raw
+    schema: telemetry
+    tables:
+      - name: feature_usage_hourly
+        description: "Spark-transformed hourly usage data based on raw events"
