@@ -20,7 +20,7 @@ st.markdown("---")
 @st.cache_data
 def load_data_from_csv():
     """
-    Fallback: Load data from original CSV files
+    Fallback: Load data from original CSV files in spark_processed directory
     """
     # Fixed path to point to spark_processed directory
     base_path = Path(__file__).parent.parent / "data" / "spark_processed"
@@ -29,9 +29,17 @@ def load_data_from_csv():
         # Load original CSV files as fallback
         df_feature_events = pd.read_csv(base_path / "feature_usage_hourly_sample.csv", parse_dates=["window_start"])
         df_users = pd.read_csv(base_path / "users.csv")
-        df_funnel_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
-        df_funnel_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
-        df_funnel_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+        
+        # Optional funnel files - don't fail if they don't exist
+        try:
+            df_funnel_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
+            df_funnel_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
+            df_funnel_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+        except FileNotFoundError:
+            # These are optional - create empty dataframes if not found
+            df_funnel_onboarding = pd.DataFrame()
+            df_funnel_feature_adoption = pd.DataFrame()
+            df_funnel_workflow_completion = pd.DataFrame()
 
         # Data cleaning
         df_feature_events['window_start'] = pd.to_datetime(df_feature_events['window_start'], errors='coerce')
@@ -69,8 +77,6 @@ def load_data_from_csv():
         time_aggregations['week_start'] = time_aggregations['window_start'].dt.to_period('W').dt.start_time
         time_aggregations['month_start'] = time_aggregations['window_start'].dt.to_period('M').dt.start_time
 
-        st.success(f"✅ Loaded {len(df_feature_events):,} feature events from CSV files")
-        
         return (
             df_all_data_merged,
             df_users, 
@@ -130,15 +136,12 @@ def load_data_from_dbt_outputs():
     
     for dbt_path in possible_paths:
         try:
-            st.info(f"🔍 Checking for dbt outputs in: {dbt_path}")
-            
             # Look for different file formats
             formats_to_try = ['.csv', '.parquet', '.json']
             
             for fmt in formats_to_try:
                 feature_file = dbt_path / f"mart_feature_usage_hourly{fmt}"
                 if feature_file.exists():
-                    st.success(f"✅ Found dbt outputs in {fmt} format at: {dbt_path}")
                     
                     # Load based on format
                     if fmt == '.csv':
@@ -162,8 +165,6 @@ def load_data_from_dbt_outputs():
                     # Merge feature events with users
                     df_all_data_merged = pd.merge(df_feature_events, df_users, on='user_id', how='left')
                     
-                    st.success(f"✅ Loaded {len(df_feature_events):,} feature events from dbt marts")
-                    
                     return (
                         df_all_data_merged,
                         df_users, 
@@ -174,7 +175,6 @@ def load_data_from_dbt_outputs():
                         df_time_aggregations
                     )
         except Exception as e:
-            st.warning(f"Could not load from {dbt_path}: {e}")
             continue
     
     return None
@@ -190,8 +190,6 @@ def load_data():
         return dbt_data
     
     # Fallback to CSV files
-    st.warning("🔄 dbt outputs not found. Falling back to Spark processed CSV files.")
-    
     return load_data_from_csv()
 
 # === Load Data Using Fallback Strategy ===
@@ -357,6 +355,14 @@ with tab2:
     
     # Feature usage over time
     st.subheader("Feature Usage Trends")
+    
+    # Create time groupings
+    if time_granularity == "Daily":
+        freq = 'D'
+    elif time_granularity == "Weekly":
+        freq = 'W'
+    else:
+        freq = 'MS'
     
     df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
     feature_time = df_filtered.groupby(['time_group', 'feature'])['event_count'].sum().reset_index()
