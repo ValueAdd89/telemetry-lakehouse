@@ -16,83 +16,185 @@ st.title("📊 Telemetry Lakehouse Dashboard")
 st.markdown("Use this dashboard to explore product feature usage, user behavior, and engagement over time.")
 st.markdown("---")
 
-# --- Data Loading (Cached for performance) ---
-# streamlit_app/dashboard.py - Updated load_data function
-@st.cache_data  
-def load_data():
-    """Load data from dbt outputs (Parquet format)"""
-    dbt_target_path = Path(__file__).parent.parent / "dbt" / "target" / "run" / "telemetry_lakehouse" / "models" / "marts"
-    
-    try:
-        # Read Parquet files instead of CSV (better performance)
-        df_feature_events = pd.read_parquet(dbt_target_path / "mart_feature_usage_hourly.parquet")
-        df_users = pd.read_parquet(dbt_target_path / "mart_user_profiles.parquet")
-        df_user_sessions = pd.read_parquet(dbt_target_path / "mart_user_sessions.parquet")
-        df_top_features = pd.read_parquet(dbt_target_path / "mart_top_features.parquet")
-        
-        # Parse dates
-        df_feature_events['window_start'] = pd.to_datetime(df_feature_events['window_start'])
-        
-        return df_feature_events, df_users, df_user_sessions, df_top_features
-        
-    except FileNotFoundError:
-        # Fallback: Try to read from database if available
-        return load_from_database()
-    except:
-        st.error("dbt models not found. Run 'cd dbt && dbt run' first.")
-        st.stop()
-
-# === Alternative: Database Connection (for Production) ===
+# --- Data Loading Functions ---
 @st.cache_data
-def load_data_from_warehouse():
+def load_data_from_csv():
     """
-    Alternative: Load data directly from data warehouse
-    (For production deployment where dbt writes to warehouse)
+    Fallback: Load data from original CSV files
     """
-    import sqlalchemy
-    
-    # Connect to data warehouse (Snowflake, BigQuery, etc.)
-    engine = sqlalchemy.create_engine('postgresql://user:pass@localhost/telemetry_db')
-    
+    base_path = Path(__file__).parent.parent / "data" 
+
     try:
-        # Load mart tables from warehouse
-        df_feature_events = pd.read_sql("""
-            SELECT * FROM marts.mart_feature_usage_hourly 
-            WHERE window_start >= CURRENT_DATE - INTERVAL '90 days'
-        """, engine, parse_dates=['window_start'])
+        # Load original CSV files as fallback
+        df_feature_events = pd.read_csv(base_path / "feature_usage_hourly_sample.csv", parse_dates=["window_start"])
+        df_users = pd.read_csv(base_path / "users.csv")
+        df_funnel_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
+        df_funnel_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
+        df_funnel_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+
+        # Data cleaning
+        df_feature_events['window_start'] = pd.to_datetime(df_feature_events['window_start'], errors='coerce')
+        df_feature_events.dropna(subset=['window_start'], inplace=True)
+
+        # Merge with users
+        df_all_data_merged = pd.merge(df_feature_events, df_users, on='user_id', how='left')
+
+        # Create session data on-the-fly (as original dashboard did)
+        session_funnel = (
+            df_all_data_merged.groupby("user_id") 
+            .agg(session_start=("window_start", "min"),
+                 session_end=("window_start", "max"),
+                 feature_count=("feature", "nunique"),
+                 total_events=("event_count", "sum")) 
+            .reset_index()
+        )
+        session_funnel['session_duration_hours'] = (session_funnel['session_end'] - session_funnel['session_start']).dt.total_seconds() / 3600
+
+        # Create dummy mart-like data for compatibility
+        top_features = df_feature_events.groupby('feature')['event_count'].sum().reset_index()
+        top_features = top_features.sort_values('event_count', ascending=False)
+        top_features['rank'] = range(1, len(top_features) + 1)
         
-        df_users = pd.read_sql("SELECT * FROM marts.mart_user_profiles", engine)
+        funnel_analysis = pd.DataFrame()  # Empty for now
+        overview_kpis = pd.DataFrame({
+            'total_events': [df_feature_events['event_count'].sum()],
+            'unique_users': [df_feature_events['user_id'].nunique()],
+            'avg_events_per_user': [df_feature_events['event_count'].sum() / df_feature_events['user_id'].nunique()],
+            'avg_session_duration_hours': [session_funnel['session_duration_hours'].mean()]
+        })
         
-        df_user_sessions = pd.read_sql("""
-            SELECT * FROM marts.mart_user_sessions
-            WHERE session_start >= CURRENT_DATE - INTERVAL '90 days'  
-        """, engine, parse_dates=['session_start', 'session_end'])
+        time_aggregations = df_feature_events.copy()
+        time_aggregations['day_start'] = time_aggregations['window_start'].dt.floor('D')
+        time_aggregations['week_start'] = time_aggregations['window_start'].dt.to_period('W').dt.start_time
+        time_aggregations['month_start'] = time_aggregations['window_start'].dt.to_period('M').dt.start_time
+
+        st.success(f"✅ Loaded {len(df_feature_events):,} feature events from CSV files")
+        st.info("📊 Data sourced from: Original CSV files (dbt marts not available)")
         
-        # ... load other marts
-        
-        return df_feature_events, df_users, df_user_sessions
+        return (
+            df_all_data_merged,
+            df_users, 
+            session_funnel, 
+            top_features,
+            funnel_analysis,
+            overview_kpis,
+            time_aggregations
+        )
         
     except Exception as e:
-        st.error(f"Database connection failed: {e}")
-        st.info("Falling back to CSV-based mart loading...")
-        return load_data()  # Fallback to CSV approach
+        st.error(f"Error loading CSV files: {e}")
+        st.stop()
 
-# === Load Data Using Proper Architecture ===
-# Use CSV-based marts for development, database marts for production
-USE_WAREHOUSE = False  # Set to True for production database deployment
+@st.cache_data
+def load_data_from_dbt_outputs():
+    """
+    Primary: Load data from dbt target outputs
+    """
+    # Try different possible dbt output locations
+    possible_paths = [
+        Path(__file__).parent.parent / "dbt" / "target",
+        Path(__file__).parent.parent / "dbt" / "target" / "run" / "telemetry_lakehouse" / "models" / "marts",
+        Path(__file__).parent.parent / "target" / "marts",
+    ]
+    
+    for dbt_path in possible_paths:
+        try:
+            st.info(f"🔍 Checking for dbt outputs in: {dbt_path}")
+            
+            # Look for different file formats
+            formats_to_try = ['.csv', '.parquet', '.json']
+            
+            for fmt in formats_to_try:
+                feature_file = dbt_path / f"mart_feature_usage_hourly{fmt}"
+                if feature_file.exists():
+                    st.success(f"✅ Found dbt outputs in {fmt} format at: {dbt_path}")
+                    
+                    # Load based on format
+                    if fmt == '.csv':
+                        df_feature_events = pd.read_csv(feature_file, parse_dates=["window_start"])
+                        df_users = pd.read_csv(dbt_path / f"mart_user_profiles{fmt}")
+                        df_user_sessions = pd.read_csv(dbt_path / f"mart_user_sessions{fmt}", parse_dates=["session_start", "session_end"])
+                        df_top_features = pd.read_csv(dbt_path / f"mart_top_features{fmt}")
+                        df_overview_kpis = pd.read_csv(dbt_path / f"mart_dashboard_overview{fmt}")
+                        df_time_aggregations = pd.read_csv(dbt_path / f"mart_feature_usage_by_time{fmt}")
+                        df_funnel_analysis = pd.read_csv(dbt_path / f"mart_funnel_analysis{fmt}") if (dbt_path / f"mart_funnel_analysis{fmt}").exists() else pd.DataFrame()
+                        
+                    elif fmt == '.parquet':
+                        df_feature_events = pd.read_parquet(feature_file)
+                        df_users = pd.read_parquet(dbt_path / f"mart_user_profiles{fmt}")
+                        df_user_sessions = pd.read_parquet(dbt_path / f"mart_user_sessions{fmt}")
+                        df_top_features = pd.read_parquet(dbt_path / f"mart_top_features{fmt}")
+                        df_overview_kpis = pd.read_parquet(dbt_path / f"mart_dashboard_overview{fmt}")
+                        df_time_aggregations = pd.read_parquet(dbt_path / f"mart_feature_usage_by_time{fmt}")
+                        df_funnel_analysis = pd.read_parquet(dbt_path / f"mart_funnel_analysis{fmt}") if (dbt_path / f"mart_funnel_analysis{fmt}").exists() else pd.DataFrame()
+                    
+                    # Merge feature events with users
+                    df_all_data_merged = pd.merge(df_feature_events, df_users, on='user_id', how='left')
+                    
+                    st.success(f"✅ Loaded {len(df_feature_events):,} feature events from dbt marts")
+                    st.info("📊 Data sourced from: CSV → dbt staging → dbt intermediate → dbt marts")
+                    
+                    return (
+                        df_all_data_merged,
+                        df_users, 
+                        df_user_sessions, 
+                        df_top_features,
+                        df_funnel_analysis,
+                        df_overview_kpis,
+                        df_time_aggregations
+                    )
+        except Exception as e:
+            st.warning(f"Could not load from {dbt_path}: {e}")
+            continue
+    
+    return None
 
-if USE_WAREHOUSE:
-    (df_all_data, df_users, df_user_sessions, df_top_features, 
-     df_funnel_analysis, df_overview_kpis, df_time_aggregations) = load_data_from_warehouse()
-else:
+@st.cache_data
+def load_data():
+    """
+    Main data loading function with fallback strategy
+    """
+    # Try to load from dbt outputs first
+    dbt_data = load_data_from_dbt_outputs()
+    if dbt_data is not None:
+        return dbt_data
+    
+    # Fallback to CSV files
+    st.warning("🔄 dbt outputs not found. Falling back to original CSV files.")
+    st.info("""
+    **To use dbt marts:**
+    1. Navigate to dbt directory: `cd dbt`
+    2. Run dbt models: `dbt run`
+    3. Refresh this dashboard
+    """)
+    
+    return load_data_from_csv()
+
+# === Load Data Using Fallback Strategy ===
+try:
     (df_all_data, df_users, df_user_sessions, df_top_features, 
      df_funnel_analysis, df_overview_kpis, df_time_aggregations) = load_data()
+except Exception as e:
+    st.error(f"""
+    🚨 **Critical Error Loading Data**
+    
+    Error: {str(e)}
+    
+    **Troubleshooting Steps:**
+    1. Check that data files exist in `data/` folder
+    2. If using dbt: Run `cd dbt && dbt run` 
+    3. Ensure CSV files have correct column names
+    4. Refresh the page
+    """)
+    st.stop()
 
+# --- Rest of dashboard code continues... ---
+# (Sidebar filters, tabs, etc. remain the same)
 
-# --- Sidebar Filters (Updated for Mart Data) ---
+# --- Sidebar Filters ---
 st.sidebar.header("Filter Data")
 
-# Date Range Filter (using mart data date range)
+# Date Range Filter
 if not df_all_data['window_start'].empty:
     min_date_val = df_all_data['window_start'].min().date()
     max_date_val = df_all_data['window_start'].max().date()
@@ -115,11 +217,11 @@ time_granularity = st.sidebar.selectbox(
     options=["Daily", "Weekly", "Monthly"]
 )
 
-# Feature Selection (using mart data)
+# Feature Selection
 all_features_options = ['All'] + sorted(df_all_data['feature'].unique().tolist())
 selected_feature = st.sidebar.selectbox("Select Feature", options=all_features_options, index=0)
 
-# User Selection (using mart data)
+# User Selection
 all_users_options = ['All'] + sorted(df_all_data['user_id'].unique().tolist())
 selected_user = st.sidebar.selectbox("Select User", options=all_users_options, index=0)
 
@@ -136,10 +238,10 @@ with st.sidebar.expander("📊 Data Lineage"):
     4. 📊 dbt Mart models (analytics-ready)
     5. 📈 Streamlit Dashboard (this app)
     
-    **Current Source:** dbt Mart Models
+    **Current Source:** Auto-detected
     """)
 
-# === Apply Filters to Mart Data ===
+# === Apply Filters ===
 if len(date_range) == 2:
     start_date = pd.to_datetime(date_range[0])
     end_date = pd.to_datetime(date_range[1]) + pd.Timedelta(days=1) 
@@ -147,17 +249,15 @@ else:
     start_date = pd.to_datetime(min_date_val)
     end_date = pd.to_datetime(max_date_val) + pd.Timedelta(days=1)
 
-# Filter mart data
+# Filter data
 df_filtered = df_all_data[
     (df_all_data['window_start'] >= start_date) &
     (df_all_data['window_start'] < end_date) 
 ].copy() 
 
-# Apply feature filter
 if selected_feature != 'All':
     df_filtered = df_filtered[df_filtered['feature'] == selected_feature].copy()
 
-# Apply user filter  
 if selected_user != 'All':
     df_filtered = df_filtered[df_filtered['user_id'] == selected_user].copy()
 
@@ -165,9 +265,9 @@ if selected_user != 'All':
 df_sessions_filtered = df_user_sessions[
     (df_user_sessions['session_start'] >= start_date) &
     (df_user_sessions['session_start'] < end_date)
-].copy()
+].copy() if 'session_start' in df_user_sessions.columns else df_user_sessions.copy()
 
-if selected_user != 'All':
+if selected_user != 'All' and 'user_id' in df_sessions_filtered.columns:
     df_sessions_filtered = df_sessions_filtered[
         df_sessions_filtered['user_id'] == selected_user
     ].copy()
@@ -177,29 +277,28 @@ if df_filtered.empty:
     st.warning("No data available for the selected filters. Please adjust your selections.")
     st.stop()
 
-# === Dashboard Tabs (Using Mart Data) ===
+# === Dashboard Tabs ===
 tab_names = ["📈 Overview", "🔍 Feature Analysis", "👥 User Insights", "🏆 Top Features", "⏱ Session Analysis", "📉 Funnel Analysis"]
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(tab_names)
 
-# --- Tab 1: Overview (Using Pre-calculated KPIs) ---
+# --- Tab 1: Overview ---
 with tab1:
     st.header("Product Usage Summary")
 
-    # Use pre-calculated KPIs from mart_dashboard_overview
-    if not df_overview_kpis.empty:
-        kpi_row = df_overview_kpis.iloc[0]  # Single row with aggregated KPIs
-        
+    # Use pre-calculated KPIs if available, otherwise calculate
+    if not df_overview_kpis.empty and 'total_events' in df_overview_kpis.columns:
+        kpi_row = df_overview_kpis.iloc[0]
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Total Events", f"{int(kpi_row['total_events']):,}")
         col2.metric("Unique Users", f"{int(kpi_row['unique_users']):,}")
         col3.metric("Avg Events / User", f"{kpi_row['avg_events_per_user']:.1f}")
         col4.metric("Avg Session Duration", f"{kpi_row['avg_session_duration_hours']:.1f}h")
     else:
-        # Fallback to filtered data calculations
+        # Fallback calculations
         total_events_kpi = df_filtered['event_count'].sum()
         unique_users_kpi = df_filtered['user_id'].nunique()
         avg_events_per_user = total_events_kpi / unique_users_kpi if unique_users_kpi > 0 else 0
-        avg_session_duration = df_sessions_filtered['session_duration_hours'].mean()
+        avg_session_duration = df_sessions_filtered['session_duration_hours'].mean() if 'session_duration_hours' in df_sessions_filtered.columns else 0
 
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Total Events", f"{int(total_events_kpi):,}")
@@ -209,45 +308,29 @@ with tab1:
 
     st.markdown("---")
 
-    # Use pre-aggregated time data from mart_feature_usage_by_time
+    # Time trends
     st.subheader("Total Events Over Time")
     
-    if not df_time_aggregations.empty:
-        # Use pre-calculated time aggregations instead of on-the-fly groupby
-        time_col_map = {
-            "Daily": "day_start",
-            "Weekly": "week_start", 
-            "Monthly": "month_start"
-        }
-        
-        time_col = time_col_map[time_granularity]
-        
-        # Filter time aggregations by date range and user/feature
-        time_data_filtered = df_time_aggregations[
-            (df_time_aggregations[time_col] >= start_date.normalize()) &
-            (df_time_aggregations[time_col] < end_date.normalize())
-        ].copy()
-        
-        if selected_feature != 'All':
-            time_data_filtered = time_data_filtered[time_data_filtered['feature'] == selected_feature]
-        if selected_user != 'All':
-            time_data_filtered = time_data_filtered[time_data_filtered['user_id'] == selected_user]
-            
-        if not time_data_filtered.empty:
-            events_over_time = time_data_filtered.groupby(time_col)['event_count'].sum().reset_index()
-            events_over_time.columns = ['Date', 'Total Events']
-            
-            fig_events_time = px.line(events_over_time, x="Date", y="Total Events", 
-                                    title=f"Total Events ({time_granularity}) - From dbt Marts")
-            st.plotly_chart(fig_events_time, use_container_width=True)
-        else:
-            st.info("No time-aggregated data available for current filters.")
+    # Create time groupings
+    if time_granularity == "Daily":
+        freq = 'D'
+    elif time_granularity == "Weekly":
+        freq = 'W'
     else:
-        st.info("Pre-aggregated time data not available. Please run dbt models.")
+        freq = 'MS'
 
-# Continue with other tabs using mart data...
-# (The rest of the tabs would follow similar pattern - using mart data instead of raw calculations)
+    df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
+    events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
+    events_over_time.columns = ['Date', 'Total Events']
 
+    if not events_over_time.empty:
+        fig_events_time = px.line(events_over_time, x="Date", y="Total Events", 
+                                title=f"Total Events ({time_granularity})")
+        st.plotly_chart(fig_events_time, use_container_width=True)
+    else:
+        st.info("No event data over time for the current selection.")
+
+# Continue with other tabs...
 st.sidebar.markdown("---")
-st.sidebar.markdown("**🎯 Powered by dbt Marts**")
-st.sidebar.caption("Analytics-ready data from the lakehouse")
+st.sidebar.markdown("**🎯 Powered by Modern Data Stack**")
+st.sidebar.caption("CSV → dbt → Streamlit Pipeline")
