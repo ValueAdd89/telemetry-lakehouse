@@ -462,106 +462,7 @@ with tab6:
         try:
             df_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
             df_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
-            df_workflow_completion_filtered = df_workflow_completion[
-                (df_workflow_completion['timestamp'] >= start_date) &
-                (df_workflow_completion['timestamp'] < end_date)
-            ]
-            
-            # Apply user filter if specific user selected
-            if selected_user != 'All':
-                df_feature_adoption_filtered = df_feature_adoption_filtered[df_feature_adoption_filtered['user_id'] == selected_user]
-                df_workflow_completion_filtered = df_workflow_completion_filtered[df_workflow_completion_filtered['user_id'] == selected_user]
-            
-            # Feature breakdown analysis
-            st.subheader("Feature Adoption Breakdown")
-            
-            if len(df_feature_adoption_filtered) > 0 and 'feature_name' in df_feature_adoption_filtered.columns:
-                feature_breakdown = df_feature_adoption_filtered.groupby('feature_name')['user_id'].nunique().reset_index()
-                feature_breakdown.columns = ['Feature', 'Users']
-                feature_breakdown = feature_breakdown.sort_values('Users', ascending=False)
-                
-                # Feature adoption table
-                st.dataframe(feature_breakdown, use_container_width=True)
-                
-                # Feature adoption chart
-                fig_feature_breakdown = px.bar(feature_breakdown, x='Feature', y='Users',
-                                             title='Users Who Adopted Each Feature')
-                fig_feature_breakdown.update_xaxes(tickangle=45)
-                st.plotly_chart(fig_feature_breakdown, use_container_width=True)
-                
-                # Feature adoption by funnel step
-                st.subheader("Feature Adoption by Funnel Step")
-                feature_step_breakdown = df_feature_adoption_filtered.groupby(['feature_name', 'funnel_step'])['user_id'].nunique().reset_index()
-                feature_step_breakdown.columns = ['Feature', 'Funnel Step', 'Users']
-                
-                if not feature_step_breakdown.empty:
-                    fig_feature_step = px.bar(feature_step_breakdown, x='Feature', y='Users', color='Funnel Step',
-                                            title='Feature Adoption by Funnel Step')
-                    fig_feature_step.update_xaxes(tickangle=45)
-                    st.plotly_chart(fig_feature_step, use_container_width=True)
-                
-            else:
-                st.info("No feature adoption data available for breakdown analysis.")
-            
-            # Workflow breakdown analysis
-            st.subheader("Workflow Completion Breakdown")
-            
-            if len(df_workflow_completion_filtered) > 0 and 'workflow_id' in df_workflow_completion_filtered.columns:
-                workflow_breakdown = df_workflow_completion_filtered.groupby('workflow_id')['user_id'].nunique().reset_index()
-                workflow_breakdown.columns = ['Workflow', 'Users']
-                workflow_breakdown = workflow_breakdown.sort_values('Users', ascending=False)
-                
-                # Workflow completion table
-                st.dataframe(workflow_breakdown, use_container_width=True)
-                
-                # Workflow completion chart
-                fig_workflow_breakdown = px.bar(workflow_breakdown, x='Workflow', y='Users',
-                                              title='Users Who Completed Each Workflow')
-                fig_workflow_breakdown.update_xaxes(tickangle=45)
-                st.plotly_chart(fig_workflow_breakdown, use_container_width=True)
-                
-                # Workflow completion by funnel step
-                st.subheader("Workflow Completion by Funnel Step")
-                workflow_step_breakdown = df_workflow_completion_filtered.groupby(['workflow_id', 'funnel_step'])['user_id'].nunique().reset_index()
-                workflow_step_breakdown.columns = ['Workflow', 'Funnel Step', 'Users']
-                
-                if not workflow_step_breakdown.empty:
-                    fig_workflow_step = px.bar(workflow_step_breakdown, x='Workflow', y='Users', color='Funnel Step',
-                                             title='Workflow Completion by Funnel Step')
-                    fig_workflow_step.update_xaxes(tickangle=45)
-                    st.plotly_chart(fig_workflow_step, use_container_width=True)
-                
-            else:
-                st.info("No workflow completion data available for breakdown analysis.")
-                
-        except FileNotFoundError as e:
-            st.warning(f"Feature/Workflow breakdown files not found: {e}")
-            
-            # Fallback to basic feature analysis from main data
-            st.subheader("Basic Feature Usage Analysis")
-            
-            if not df_filtered.empty and 'feature' in df_filtered.columns:
-                basic_feature_breakdown = df_filtered.groupby('feature')['user_id'].nunique().reset_index()
-                basic_feature_breakdown.columns = ['Feature', 'Unique Users']
-                basic_feature_breakdown = basic_feature_breakdown.sort_values('Unique Users', ascending=False)
-                
-                st.dataframe(basic_feature_breakdown, use_container_width=True)
-                
-                fig_basic_features = px.bar(basic_feature_breakdown, x='Feature', y='Unique Users',
-                                          title='Unique Users by Feature (from main data)')
-                fig_basic_features.update_xaxes(tickangle=45)
-                st.plotly_chart(fig_basic_features, use_container_width=True)
-            else:
-                st.info("No feature data available for basic analysis.")
-            
-    except Exception as e:
-        st.error(f"Error creating breakdown analysis: {e}")
-        st.info("Unable to generate breakdown analysis with available data.")
-
-# Footer
-st.sidebar.markdown("---")
-st.sidebar.markdown("**🎯 Powered by Modern Data Stack**")
-st.sidebar.caption("CSV → Spark → dbt → Streamlit Pipeline") = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+            df_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
             
             # Filter by date range
             df_onboarding_filtered = df_onboarding[
@@ -699,4 +600,103 @@ with tab7:
                 (df_feature_adoption['timestamp'] >= start_date) &
                 (df_feature_adoption['timestamp'] < end_date)
             ]
-            df_workflow_completion
+            df_workflow_completion_filtered = df_workflow_completion[
+                (df_workflow_completion['timestamp'] >= start_date) &
+                (df_workflow_completion['timestamp'] < end_date)
+            ]
+            
+            # Apply user filter if specific user selected
+            if selected_user != 'All':
+                df_feature_adoption_filtered = df_feature_adoption_filtered[df_feature_adoption_filtered['user_id'] == selected_user]
+                df_workflow_completion_filtered = df_workflow_completion_filtered[df_workflow_completion_filtered['user_id'] == selected_user]
+            
+            # Feature breakdown analysis
+            st.subheader("Feature Adoption Breakdown")
+            
+            if len(df_feature_adoption_filtered) > 0 and 'feature_name' in df_feature_adoption_filtered.columns:
+                feature_breakdown = df_feature_adoption_filtered.groupby('feature_name')['user_id'].nunique().reset_index()
+                feature_breakdown.columns = ['Feature', 'Users']
+                feature_breakdown = feature_breakdown.sort_values('Users', ascending=False)
+                
+                # Feature adoption table
+                st.dataframe(feature_breakdown, use_container_width=True)
+                
+                # Feature adoption chart
+                fig_feature_breakdown = px.bar(feature_breakdown, x='Feature', y='Users',
+                                             title='Users Who Adopted Each Feature')
+                fig_feature_breakdown.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_feature_breakdown, use_container_width=True)
+                
+                # Feature adoption by funnel step
+                st.subheader("Feature Adoption by Funnel Step")
+                feature_step_breakdown = df_feature_adoption_filtered.groupby(['feature_name', 'funnel_step'])['user_id'].nunique().reset_index()
+                feature_step_breakdown.columns = ['Feature', 'Funnel Step', 'Users']
+                
+                if not feature_step_breakdown.empty:
+                    fig_feature_step = px.bar(feature_step_breakdown, x='Feature', y='Users', color='Funnel Step',
+                                            title='Feature Adoption by Funnel Step')
+                    fig_feature_step.update_xaxes(tickangle=45)
+                    st.plotly_chart(fig_feature_step, use_container_width=True)
+                
+            else:
+                st.info("No feature adoption data available for breakdown analysis.")
+            
+            # Workflow breakdown analysis
+            st.subheader("Workflow Completion Breakdown")
+            
+            if len(df_workflow_completion_filtered) > 0 and 'workflow_id' in df_workflow_completion_filtered.columns:
+                workflow_breakdown = df_workflow_completion_filtered.groupby('workflow_id')['user_id'].nunique().reset_index()
+                workflow_breakdown.columns = ['Workflow', 'Users']
+                workflow_breakdown = workflow_breakdown.sort_values('Users', ascending=False)
+                
+                # Workflow completion table
+                st.dataframe(workflow_breakdown, use_container_width=True)
+                
+                # Workflow completion chart
+                fig_workflow_breakdown = px.bar(workflow_breakdown, x='Workflow', y='Users',
+                                              title='Users Who Completed Each Workflow')
+                fig_workflow_breakdown.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_workflow_breakdown, use_container_width=True)
+                
+                # Workflow completion by funnel step
+                st.subheader("Workflow Completion by Funnel Step")
+                workflow_step_breakdown = df_workflow_completion_filtered.groupby(['workflow_id', 'funnel_step'])['user_id'].nunique().reset_index()
+                workflow_step_breakdown.columns = ['Workflow', 'Funnel Step', 'Users']
+                
+                if not workflow_step_breakdown.empty:
+                    fig_workflow_step = px.bar(workflow_step_breakdown, x='Workflow', y='Users', color='Funnel Step',
+                                             title='Workflow Completion by Funnel Step')
+                    fig_workflow_step.update_xaxes(tickangle=45)
+                    st.plotly_chart(fig_workflow_step, use_container_width=True)
+                
+            else:
+                st.info("No workflow completion data available for breakdown analysis.")
+                
+        except FileNotFoundError as e:
+            st.warning(f"Feature/Workflow breakdown files not found: {e}")
+            
+            # Fallback to basic feature analysis from main data
+            st.subheader("Basic Feature Usage Analysis")
+            
+            if not df_filtered.empty and 'feature' in df_filtered.columns:
+                basic_feature_breakdown = df_filtered.groupby('feature')['user_id'].nunique().reset_index()
+                basic_feature_breakdown.columns = ['Feature', 'Unique Users']
+                basic_feature_breakdown = basic_feature_breakdown.sort_values('Unique Users', ascending=False)
+                
+                st.dataframe(basic_feature_breakdown, use_container_width=True)
+                
+                fig_basic_features = px.bar(basic_feature_breakdown, x='Feature', y='Unique Users',
+                                          title='Unique Users by Feature (from main data)')
+                fig_basic_features.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_basic_features, use_container_width=True)
+            else:
+                st.info("No feature data available for basic analysis.")
+            
+    except Exception as e:
+        st.error(f"Error creating breakdown analysis: {e}")
+        st.info("Unable to generate breakdown analysis with available data.")
+
+# Footer
+st.sidebar.markdown("---")
+st.sidebar.markdown("**🎯 Powered by Modern Data Stack**")
+st.sidebar.caption("CSV → Spark → dbt → Streamlit Pipeline")
