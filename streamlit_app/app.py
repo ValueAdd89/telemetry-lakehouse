@@ -297,8 +297,8 @@ if df_filtered.empty:
     st.stop()
 
 # === Dashboard Tabs ===
-tab_names = ["📈 Overview", "🔍 Feature Analysis", "👥 User Insights", "🏆 Top Features", "⏱ Session Analysis", "📉 Funnel Analysis"]
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(tab_names)
+tab_names = ["📈 Overview", "🔍 Feature Analysis", "👥 User Insights", "🏆 Top Features", "⏱ Session Analysis", "📉 Funnel Analysis", "📊 Feature & Workflow Breakdown"]
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(tab_names)
 
 # --- Tab 1: Overview ---
 with tab1:
