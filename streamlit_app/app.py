@@ -327,10 +327,7 @@ with tab1:
 
     st.markdown("---")
 
-    # Time trends
-    st.subheader("Total Events Over Time")
-    
-    # Create time groupings
+    # Create time groupings for charts
     if time_granularity == "Daily":
         freq = 'D'
     elif time_granularity == "Weekly":
@@ -339,23 +336,74 @@ with tab1:
         freq = 'MS'
 
     df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
-    events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
-    events_over_time.columns = ['Date', 'Total Events']
+    
+    # Grid layout for visualizations
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("Events Over Time")
+        events_over_time = df_filtered.groupby('time_group')['event_count'].sum().reset_index()
+        events_over_time.columns = ['Date', 'Total Events']
 
-    if not events_over_time.empty:
-        fig_events_time = px.line(events_over_time, x="Date", y="Total Events", 
-                                title=f"Total Events ({time_granularity})")
-        st.plotly_chart(fig_events_time, use_container_width=True)
-    else:
-        st.info("No event data over time for the current selection.")
+        if not events_over_time.empty:
+            fig_events_time = px.line(events_over_time, x="Date", y="Total Events", 
+                                    title=f"Total Events ({time_granularity})")
+            fig_events_time.update_layout(height=400)
+            st.plotly_chart(fig_events_time, use_container_width=True)
+        else:
+            st.info("No event data over time for the current selection.")
+    
+    with col2:
+        st.subheader("Top Features")
+        feature_summary = df_filtered.groupby('feature')['event_count'].sum().reset_index()
+        feature_summary = feature_summary.sort_values('event_count', ascending=False).head(5)
+        
+        if not feature_summary.empty:
+            fig_feature_pie = px.pie(feature_summary, values="event_count", names="feature", 
+                                   title="Top 5 Features Distribution")
+            fig_feature_pie.update_layout(height=400)
+            st.plotly_chart(fig_feature_pie, use_container_width=True)
+        else:
+            st.info("No feature data available.")
+
+    # Second row
+    col3, col4 = st.columns(2)
+    
+    with col3:
+        st.subheader("User Activity Distribution")
+        user_activity = df_filtered.groupby('user_id')['event_count'].sum().reset_index()
+        user_activity.columns = ['user_id', 'total_events']
+        
+        if not user_activity.empty:
+            fig_user_dist = px.histogram(user_activity, x="total_events", nbins=15,
+                                       title="User Activity Levels")
+            fig_user_dist.update_layout(height=400)
+            st.plotly_chart(fig_user_dist, use_container_width=True)
+        else:
+            st.info("No user activity data available.")
+    
+    with col4:
+        st.subheader("Feature Usage Trends")
+        if not df_filtered.empty:
+            # Show top 3 features only for readability
+            top_features_list = df_filtered.groupby('feature')['event_count'].sum().nlargest(3).index.tolist()
+            feature_time = df_filtered.groupby(['time_group', 'feature'])['event_count'].sum().reset_index()
+            feature_time_filtered = feature_time[feature_time['feature'].isin(top_features_list)]
+            
+            if not feature_time_filtered.empty:
+                fig_feature_trends = px.line(feature_time_filtered, x="time_group", y="event_count", 
+                                           color="feature", title="Top 3 Features Over Time")
+                fig_feature_trends.update_layout(height=400)
+                st.plotly_chart(fig_feature_trends, use_container_width=True)
+            else:
+                st.info("No feature trend data available.")
+        else:
+            st.info("No data available for feature trends.")
 
 # --- Tab 2: Feature Analysis ---
 with tab2:
     st.header("Feature Usage Analysis")
     
-    # Feature usage over time
-    st.subheader("Feature Usage Trends")
-    
     # Create time groupings
     if time_granularity == "Daily":
         freq = 'D'
@@ -365,50 +413,170 @@ with tab2:
         freq = 'MS'
     
     df_filtered['time_group'] = df_filtered['window_start'].dt.to_period(freq).dt.to_timestamp()
-    feature_time = df_filtered.groupby(['time_group', 'feature'])['event_count'].sum().reset_index()
     
-    if not feature_time.empty:
-        # Show top features only for readability
-        top_features_list = df_filtered.groupby('feature')['event_count'].sum().nlargest(top_n_features).index.tolist()
-        feature_time_filtered = feature_time[feature_time['feature'].isin(top_features_list)]
+    # Grid layout for feature analysis
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("Feature Usage Trends")
+        feature_time = df_filtered.groupby(['time_group', 'feature'])['event_count'].sum().reset_index()
         
-        fig_feature_trends = px.line(feature_time_filtered, x="time_group", y="event_count", 
-                                   color="feature", title=f"Top {top_n_features} Feature Usage Over Time")
-        st.plotly_chart(fig_feature_trends, use_container_width=True)
+        if not feature_time.empty:
+            # Show top features only for readability
+            top_features_list = df_filtered.groupby('feature')['event_count'].sum().nlargest(top_n_features).index.tolist()
+            feature_time_filtered = feature_time[feature_time['feature'].isin(top_features_list)]
+            
+            fig_feature_trends = px.line(feature_time_filtered, x="time_group", y="event_count", 
+                                       color="feature", title=f"Top {top_n_features} Feature Usage Over Time")
+            fig_feature_trends.update_layout(height=450)
+            st.plotly_chart(fig_feature_trends, use_container_width=True)
+        else:
+            st.info("No feature trend data available.")
     
-    # Feature distribution
-    st.subheader("Feature Usage Distribution")
-    feature_summary = df_filtered.groupby('feature')['event_count'].sum().reset_index()
-    feature_summary = feature_summary.sort_values('event_count', ascending=False).head(top_n_features)
+    with col2:
+        st.subheader("Feature Usage Distribution")
+        feature_summary = df_filtered.groupby('feature')['event_count'].sum().reset_index()
+        feature_summary = feature_summary.sort_values('event_count', ascending=False).head(top_n_features)
+        
+        if not feature_summary.empty:
+            fig_feature_bar = px.bar(feature_summary, x="feature", y="event_count", 
+                                   title=f"Top {top_n_features} Features by Usage")
+            fig_feature_bar.update_xaxes(tickangle=45)
+            fig_feature_bar.update_layout(height=450)
+            st.plotly_chart(fig_feature_bar, use_container_width=True)
+        else:
+            st.info("No feature distribution data available.")
+
+    # Second row - Feature heatmap and statistics
+    col3, col4 = st.columns(2)
     
-    if not feature_summary.empty:
-        fig_feature_bar = px.bar(feature_summary, x="feature", y="event_count", 
-                               title=f"Top {top_n_features} Features by Usage")
-        fig_feature_bar.update_xaxes(tickangle=45)
-        st.plotly_chart(fig_feature_bar, use_container_width=True)
+    with col3:
+        st.subheader("Feature Usage by Hour")
+        if not df_filtered.empty and 'window_start' in df_filtered.columns:
+            df_filtered['hour'] = df_filtered['window_start'].dt.hour
+            hourly_usage = df_filtered.groupby(['hour', 'feature'])['event_count'].sum().reset_index()
+            
+            if not hourly_usage.empty:
+                # Create pivot for heatmap
+                hourly_pivot = hourly_usage.pivot(index='feature', columns='hour', values='event_count')
+                hourly_pivot = hourly_pivot.fillna(0)
+                
+                fig_heatmap = px.imshow(hourly_pivot, 
+                                      title="Feature Usage Heatmap by Hour",
+                                      labels=dict(x="Hour of Day", y="Feature", color="Event Count"))
+                fig_heatmap.update_layout(height=450)
+                st.plotly_chart(fig_heatmap, use_container_width=True)
+            else:
+                st.info("No hourly usage data available.")
+        else:
+            st.info("No timestamp data available for hourly analysis.")
+    
+    with col4:
+        st.subheader("Feature Statistics")
+        if not df_filtered.empty:
+            feature_stats = df_filtered.groupby('feature').agg({
+                'event_count': ['sum', 'mean', 'std'],
+                'user_id': 'nunique'
+            }).round(2)
+            
+            feature_stats.columns = ['Total Events', 'Avg Events', 'Std Dev', 'Unique Users']
+            feature_stats = feature_stats.sort_values('Total Events', ascending=False).head(10)
+            
+            st.dataframe(feature_stats, use_container_width=True, height=450)
+        else:
+            st.info("No feature statistics available.")
 
 # --- Tab 3: User Insights ---
 with tab3:
     st.header("User Behavior Analysis")
+
+    # Grid layout for user insights
+    col1, col2 = st.columns(2)
     
-    # User activity distribution
-    st.subheader("User Activity Distribution")
-    user_activity = df_filtered.groupby('user_id')['event_count'].sum().reset_index()
-    user_activity.columns = ['user_id', 'total_events']
+    with col1:
+        st.subheader("User Activity Distribution")
+        user_activity = df_filtered.groupby('user_id')['event_count'].sum().reset_index()
+        user_activity.columns = ['user_id', 'total_events']
+        
+        if not user_activity.empty:
+            fig_user_dist = px.histogram(user_activity, x="total_events", nbins=20,
+                                       title="Distribution of User Activity Levels")
+            fig_user_dist.update_layout(height=400)
+            st.plotly_chart(fig_user_dist, use_container_width=True)
+        else:
+            st.info("No user activity data available.")
     
-    if not user_activity.empty:
-        fig_user_dist = px.histogram(user_activity, x="total_events", nbins=20,
-                                   title="Distribution of User Activity Levels")
-        st.plotly_chart(fig_user_dist, use_container_width=True)
+    with col2:
+        st.subheader("Most Active Users")
+        if not user_activity.empty:
+            top_users = user_activity.nlargest(10, 'total_events')
+            
+            fig_top_users = px.bar(top_users, x="user_id", y="total_events",
+                                 title="Top 10 Most Active Users")
+            fig_top_users.update_layout(height=400)
+            st.plotly_chart(fig_top_users, use_container_width=True)
+        else:
+            st.info("No user data available.")
+
+    # Second row
+    col3, col4 = st.columns(2)
     
-    # Top users
-    st.subheader("Most Active Users")
-    top_users = user_activity.nlargest(10, 'total_events')
+    with col3:
+        st.subheader("User-Feature Interaction Matrix")
+        if not df_filtered.empty and 'user_id' in df_filtered.columns and 'feature' in df_filtered.columns and 'event_count' in df_filtered.columns:
+            # Sample top users and features for readability
+            top_users_sample = df_filtered.groupby('user_id')['event_count'].sum().nlargest(10).index.tolist()
+            top_features_sample = df_filtered.groupby('feature')['event_count'].sum().nlargest(5).index.tolist()
+            
+            df_sample = df_filtered[
+                (df_filtered['user_id'].isin(top_users_sample)) & 
+                (df_filtered['feature'].isin(top_features_sample))
+            ]
+            
+            if not df_sample.empty:
+                pivot = df_sample.pivot_table(index="user_id", columns="feature", values="event_count", fill_value=0)
+                
+                fig_heatmap = px.imshow(pivot, 
+                                      title="User-Feature Interaction Heatmap (Top Users & Features)",
+                                      labels=dict(x="Feature", y="User ID", color="Event Count"))
+                fig_heatmap.update_layout(height=400)
+                st.plotly_chart(fig_heatmap, use_container_width=True)
+            else:
+                st.info("Insufficient data for interaction matrix.")
+        else:
+            st.info("Insufficient data to create user-feature interaction matrix.")
     
-    if not top_users.empty:
-        fig_top_users = px.bar(top_users, x="user_id", y="total_events",
-                             title="Top 10 Most Active Users")
-        st.plotly_chart(fig_top_users, use_container_width=True)
+    with col4:
+        st.subheader("User Engagement Segmentation")
+        if not df_filtered.empty:
+            # Create user segments based on activity
+            user_features = df_filtered.groupby('user_id').agg({
+                'feature': 'nunique',
+                'event_count': 'sum'
+            }).reset_index()
+            user_features.columns = ['user_id', 'unique_features', 'total_events']
+            
+            # Define segments
+            def categorize_user(row):
+                if row['unique_features'] >= 5 and row['total_events'] >= 20:
+                    return 'Power User'
+                elif row['unique_features'] >= 3 and row['total_events'] >= 10:
+                    return 'Active User'
+                elif row['unique_features'] >= 2 and row['total_events'] >= 5:
+                    return 'Regular User'
+                else:
+                    return 'Casual User'
+            
+            user_features['segment'] = user_features.apply(categorize_user, axis=1)
+            segment_counts = user_features['segment'].value_counts().reset_index()
+            segment_counts.columns = ['Segment', 'Users']
+            
+            fig_segments = px.pie(segment_counts, values='Users', names='Segment',
+                                title="User Engagement Segments")
+            fig_segments.update_layout(height=400)
+            st.plotly_chart(fig_segments, use_container_width=True)
+        else:
+            st.info("No data available for user segmentation.")
 
 # --- Tab 4: Top Features ---
 with tab4:
@@ -435,17 +603,86 @@ with tab5:
     st.header("Session Analytics")
     
     if 'session_duration_hours' in df_sessions_filtered.columns and not df_sessions_filtered.empty:
-        # Session duration distribution
-        st.subheader("Session Duration Distribution")
-        fig_session_dist = px.histogram(df_sessions_filtered, x="session_duration_hours", nbins=20,
-                                      title="Distribution of Session Durations")
-        st.plotly_chart(fig_session_dist, use_container_width=True)
+        # Grid layout for session analysis
+        col1, col2 = st.columns(2)
         
-        # Session metrics
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Avg Session Duration", f"{df_sessions_filtered['session_duration_hours'].mean():.1f}h")
-        col2.metric("Median Session Duration", f"{df_sessions_filtered['session_duration_hours'].median():.1f}h")
-        col3.metric("Total Sessions", f"{len(df_sessions_filtered):,}")
+        with col1:
+            st.subheader("Session Duration Distribution")
+            fig_session_dist = px.histogram(df_sessions_filtered, x="session_duration_hours", nbins=20,
+                                          title="Distribution of Session Durations")
+            fig_session_dist.update_layout(height=400)
+            st.plotly_chart(fig_session_dist, use_container_width=True)
+        
+        with col2:
+            st.subheader("Session Metrics Overview")
+            # Create a summary chart
+            metrics_data = {
+                'Metric': ['Avg Duration', 'Median Duration', 'Max Duration', 'Min Duration'],
+                'Hours': [
+                    df_sessions_filtered['session_duration_hours'].mean(),
+                    df_sessions_filtered['session_duration_hours'].median(),
+                    df_sessions_filtered['session_duration_hours'].max(),
+                    df_sessions_filtered['session_duration_hours'].min()
+                ]
+            }
+            metrics_df = pd.DataFrame(metrics_data)
+            
+            fig_metrics = px.bar(metrics_df, x='Metric', y='Hours',
+                               title='Session Duration Metrics')
+            fig_metrics.update_layout(height=400)
+            st.plotly_chart(fig_metrics, use_container_width=True)
+        
+        # Second row
+        col3, col4 = st.columns(2)
+        
+        with col3:
+            st.subheader("Session Length Categories")
+            # Categorize sessions
+            def categorize_session(duration):
+                if duration < 0.5:
+                    return 'Quick (< 30min)'
+                elif duration < 2:
+                    return 'Short (30min - 2h)'
+                elif duration < 5:
+                    return 'Medium (2h - 5h)'
+                else:
+                    return 'Long (> 5h)'
+            
+            df_sessions_filtered['category'] = df_sessions_filtered['session_duration_hours'].apply(categorize_session)
+            category_counts = df_sessions_filtered['category'].value_counts().reset_index()
+            category_counts.columns = ['Category', 'Count']
+            
+            fig_categories = px.pie(category_counts, values='Count', names='Category',
+                                  title='Session Length Distribution')
+            fig_categories.update_layout(height=400)
+            st.plotly_chart(fig_categories, use_container_width=True)
+        
+        with col4:
+            st.subheader("Key Session Statistics")
+            # Display key metrics in a more visual way
+            col_a, col_b, col_c = st.columns(3)
+            col_a.metric("Avg Session Duration", f"{df_sessions_filtered['session_duration_hours'].mean():.1f}h")
+            col_b.metric("Median Session Duration", f"{df_sessions_filtered['session_duration_hours'].median():.1f}h")
+            col_c.metric("Total Sessions", f"{len(df_sessions_filtered):,}")
+            
+            # Additional statistics table
+            st.write("**Detailed Statistics:**")
+            stats_data = {
+                'Statistic': ['Mean', 'Median', 'Mode', 'Std Dev', 'Min', 'Max', '25th Percentile', '75th Percentile'],
+                'Value (hours)': [
+                    f"{df_sessions_filtered['session_duration_hours'].mean():.2f}",
+                    f"{df_sessions_filtered['session_duration_hours'].median():.2f}",
+                    f"{df_sessions_filtered['session_duration_hours'].mode().iloc[0] if not df_sessions_filtered['session_duration_hours'].mode().empty else 'N/A'}",
+                    f"{df_sessions_filtered['session_duration_hours'].std():.2f}",
+                    f"{df_sessions_filtered['session_duration_hours'].min():.2f}",
+                    f"{df_sessions_filtered['session_duration_hours'].max():.2f}",
+                    f"{df_sessions_filtered['session_duration_hours'].quantile(0.25):.2f}",
+                    f"{df_sessions_filtered['session_duration_hours'].quantile(0.75):.2f}"
+                ]
+            }
+            stats_df = pd.DataFrame(stats_data)
+            st.dataframe(stats_df, use_container_width=True, height=250)
+            
     else:
         st.info("Session data not available with current data source.")
 
