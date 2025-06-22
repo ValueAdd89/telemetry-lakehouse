@@ -453,193 +453,250 @@ with tab5:
 with tab6:
     st.header("Conversion Funnel Analysis")
     
-    if not df_funnel_analysis.empty:
-        st.dataframe(df_funnel_analysis, use_container_width=True)
-    else:
-        # Create fallback funnel analysis using available CSV data
-        st.subheader("User Journey Funnel")
+    # Create fallback funnel analysis using available CSV data
+    try:
+        # Load funnel data from CSV files
+        base_path = Path(__file__).parent.parent / "data" / "spark_processed"
         
+        # Try to load funnel CSV files
         try:
-            # Load funnel data from CSV files
-            base_path = Path(__file__).parent.parent / "data" / "spark_processed"
+            df_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
+            df_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
+            df_workflow_completion_filtered = df_workflow_completion[
+                (df_workflow_completion['timestamp'] >= start_date) &
+                (df_workflow_completion['timestamp'] < end_date)
+            ]
             
-            # Try to load funnel CSV files
-            try:
-                df_onboarding = pd.read_csv(base_path / "funnel_onboarding.csv", parse_dates=["timestamp"])
-                df_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
-                df_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+            # Apply user filter if specific user selected
+            if selected_user != 'All':
+                df_feature_adoption_filtered = df_feature_adoption_filtered[df_feature_adoption_filtered['user_id'] == selected_user]
+                df_workflow_completion_filtered = df_workflow_completion_filtered[df_workflow_completion_filtered['user_id'] == selected_user]
+            
+            # Feature breakdown analysis
+            st.subheader("Feature Adoption Breakdown")
+            
+            if len(df_feature_adoption_filtered) > 0 and 'feature_name' in df_feature_adoption_filtered.columns:
+                feature_breakdown = df_feature_adoption_filtered.groupby('feature_name')['user_id'].nunique().reset_index()
+                feature_breakdown.columns = ['Feature', 'Users']
+                feature_breakdown = feature_breakdown.sort_values('Users', ascending=False)
                 
-                # Filter by date range
-                df_onboarding_filtered = df_onboarding[
-                    (df_onboarding['timestamp'] >= start_date) &
-                    (df_onboarding['timestamp'] < end_date)
-                ]
-                df_feature_adoption_filtered = df_feature_adoption[
-                    (df_feature_adoption['timestamp'] >= start_date) &
-                    (df_feature_adoption['timestamp'] < end_date)
-                ]
-                df_workflow_completion_filtered = df_workflow_completion[
-                    (df_workflow_completion['timestamp'] >= start_date) &
-                    (df_workflow_completion['timestamp'] < end_date)
-                ]
+                # Feature adoption table
+                st.dataframe(feature_breakdown, use_container_width=True)
                 
-                # Debug info
-                st.write("**Debug Info:**")
-                st.write(f"Onboarding records: {len(df_onboarding_filtered)}")
-                st.write(f"Feature adoption records: {len(df_feature_adoption_filtered)}")
-                st.write(f"Workflow completion records: {len(df_workflow_completion_filtered)}")
+                # Feature adoption chart
+                fig_feature_breakdown = px.bar(feature_breakdown, x='Feature', y='Users',
+                                             title='Users Who Adopted Each Feature')
+                fig_feature_breakdown.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_feature_breakdown, use_container_width=True)
                 
-                if len(df_onboarding_filtered) > 0:
-                    st.write("Onboarding funnel steps:", df_onboarding_filtered['funnel_step'].unique().tolist())
-                if len(df_feature_adoption_filtered) > 0:
-                    st.write("Feature adoption steps:", df_feature_adoption_filtered['funnel_step'].unique().tolist())
-                if len(df_workflow_completion_filtered) > 0:
-                    st.write("Workflow steps:", df_workflow_completion_filtered['funnel_step'].unique().tolist())
+                # Feature adoption by funnel step
+                st.subheader("Feature Adoption by Funnel Step")
+                feature_step_breakdown = df_feature_adoption_filtered.groupby(['feature_name', 'funnel_step'])['user_id'].nunique().reset_index()
+                feature_step_breakdown.columns = ['Feature', 'Funnel Step', 'Users']
                 
-                # Create comprehensive funnel analysis
-                st.subheader("Onboarding Funnel")
+                if not feature_step_breakdown.empty:
+                    fig_feature_step = px.bar(feature_step_breakdown, x='Feature', y='Users', color='Funnel Step',
+                                            title='Feature Adoption by Funnel Step')
+                    fig_feature_step.update_xaxes(tickangle=45)
+                    st.plotly_chart(fig_feature_step, use_container_width=True)
                 
-                if len(df_onboarding_filtered) > 0:
-                    # Group by funnel step and count unique users
-                    onboarding_funnel = df_onboarding_filtered.groupby(['funnel_step', 'step_order'])['user_id'].nunique().reset_index()
-                    onboarding_funnel = onboarding_funnel.sort_values('step_order')
-                    onboarding_funnel.columns = ['Step', 'Order', 'Users']
-                    
-                    # Calculate conversion rates
-                    total_users_started = onboarding_funnel['Users'].iloc[0] if len(onboarding_funnel) > 0 else 0
-                    onboarding_funnel['Conversion Rate (%)'] = (onboarding_funnel['Users'] / total_users_started * 100) if total_users_started > 0 else 0
-                    
-                    st.dataframe(onboarding_funnel[['Step', 'Users', 'Conversion Rate (%)']], use_container_width=True)
-                    
-                    # Onboarding funnel chart
-                    fig_onboarding = px.funnel(onboarding_funnel, x='Users', y='Step', 
-                                             title='Onboarding Funnel')
-                    st.plotly_chart(fig_onboarding, use_container_width=True)
-                else:
-                    st.warning("No onboarding data available for the current filters. Please check your data or adjust filters.")
+            else:
+                st.info("No feature adoption data available for breakdown analysis.")
+            
+            # Workflow breakdown analysis
+            st.subheader("Workflow Completion Breakdown")
+            
+            if len(df_workflow_completion_filtered) > 0 and 'workflow_id' in df_workflow_completion_filtered.columns:
+                workflow_breakdown = df_workflow_completion_filtered.groupby('workflow_id')['user_id'].nunique().reset_index()
+                workflow_breakdown.columns = ['Workflow', 'Users']
+                workflow_breakdown = workflow_breakdown.sort_values('Users', ascending=False)
                 
-                st.subheader("Feature Adoption Funnel")
+                # Workflow completion table
+                st.dataframe(workflow_breakdown, use_container_width=True)
                 
-                if len(df_feature_adoption_filtered) > 0:
-                    # Feature adoption funnel
-                    feature_funnel = df_feature_adoption_filtered.groupby(['funnel_step', 'step_order'])['user_id'].nunique().reset_index()
-                    feature_funnel = feature_funnel.sort_values('step_order')
-                    feature_funnel.columns = ['Step', 'Order', 'Users']
-                    
-                    # Calculate conversion rates
-                    total_users_started_features = feature_funnel['Users'].iloc[0] if len(feature_funnel) > 0 else 0
-                    feature_funnel['Conversion Rate (%)'] = (feature_funnel['Users'] / total_users_started_features * 100) if total_users_started_features > 0 else 0
-                    
-                    st.dataframe(feature_funnel[['Step', 'Users', 'Conversion Rate (%)']], use_container_width=True)
-                    
-                    # Feature adoption chart
-                    fig_features = px.funnel(feature_funnel, x='Users', y='Step', 
-                                           title='Feature Adoption Funnel')
-                    st.plotly_chart(fig_features, use_container_width=True)
-                    
-                    # Feature breakdown
-                    st.subheader("Feature Adoption by Feature")
-                    feature_breakdown = df_feature_adoption_filtered.groupby('feature_name')['user_id'].nunique().reset_index()
-                    feature_breakdown.columns = ['Feature', 'Users']
-                    feature_breakdown = feature_breakdown.sort_values('Users', ascending=False)
-                    
-                    fig_feature_breakdown = px.bar(feature_breakdown, x='Feature', y='Users',
-                                                 title='Users Who Adopted Each Feature')
-                    fig_feature_breakdown.update_xaxes(tickangle=45)
-                    st.plotly_chart(fig_feature_breakdown, use_container_width=True)
-                else:
-                    st.warning("No feature adoption data available for the current filters.")
+                # Workflow completion chart
+                fig_workflow_breakdown = px.bar(workflow_breakdown, x='Workflow', y='Users',
+                                              title='Users Who Completed Each Workflow')
+                fig_workflow_breakdown.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_workflow_breakdown, use_container_width=True)
                 
-                st.subheader("Workflow Completion Funnel")
+                # Workflow completion by funnel step
+                st.subheader("Workflow Completion by Funnel Step")
+                workflow_step_breakdown = df_workflow_completion_filtered.groupby(['workflow_id', 'funnel_step'])['user_id'].nunique().reset_index()
+                workflow_step_breakdown.columns = ['Workflow', 'Funnel Step', 'Users']
                 
-                if len(df_workflow_completion_filtered) > 0:
-                    # Workflow completion funnel
-                    workflow_funnel = df_workflow_completion_filtered.groupby(['funnel_step', 'step_order'])['user_id'].nunique().reset_index()
-                    workflow_funnel = workflow_funnel.sort_values('step_order')
-                    workflow_funnel.columns = ['Step', 'Order', 'Users']
-                    
-                    # Calculate conversion rates
-                    total_users_started_workflows = workflow_funnel['Users'].iloc[0] if len(workflow_funnel) > 0 else 0
-                    workflow_funnel['Conversion Rate (%)'] = (workflow_funnel['Users'] / total_users_started_workflows * 100) if total_users_started_workflows > 0 else 0
-                    
-                    st.dataframe(workflow_funnel[['Step', 'Users', 'Conversion Rate (%)']], use_container_width=True)
-                    
-                    # Workflow funnel chart
-                    fig_workflows = px.funnel(workflow_funnel, x='Users', y='Step', 
-                                            title='Workflow Completion Funnel')
-                    st.plotly_chart(fig_workflows, use_container_width=True)
-                    
-                    # Workflow breakdown
-                    st.subheader("Completion by Workflow")
-                    workflow_breakdown = df_workflow_completion_filtered.groupby('workflow_id')['user_id'].nunique().reset_index()
-                    workflow_breakdown.columns = ['Workflow', 'Users']
-                    workflow_breakdown = workflow_breakdown.sort_values('Users', ascending=False)
-                    
-                    fig_workflow_breakdown = px.bar(workflow_breakdown, x='Workflow', y='Users',
-                                                  title='Users Who Completed Each Workflow')
-                    fig_workflow_breakdown.update_xaxes(tickangle=45)
-                    st.plotly_chart(fig_workflow_breakdown, use_container_width=True)
-                else:
-                    st.warning("No workflow completion data available for the current filters.")
+                if not workflow_step_breakdown.empty:
+                    fig_workflow_step = px.bar(workflow_step_breakdown, x='Workflow', y='Users', color='Funnel Step',
+                                             title='Workflow Completion by Funnel Step')
+                    fig_workflow_step.update_xaxes(tickangle=45)
+                    st.plotly_chart(fig_workflow_step, use_container_width=True)
                 
-            except FileNotFoundError as e:
-                st.warning(f"Funnel CSV files not found: {e}. Showing basic user progression analysis.")
+            else:
+                st.info("No workflow completion data available for breakdown analysis.")
                 
-                # Basic funnel using feature usage data
-                user_progression = df_filtered.groupby('user_id').agg({
-                    'feature': 'nunique',
-                    'event_count': 'sum',
-                    'window_start': ['min', 'max']
-                }).reset_index()
+        except FileNotFoundError as e:
+            st.warning(f"Feature/Workflow breakdown files not found: {e}")
+            
+            # Fallback to basic feature analysis from main data
+            st.subheader("Basic Feature Usage Analysis")
+            
+            if not df_filtered.empty and 'feature' in df_filtered.columns:
+                basic_feature_breakdown = df_filtered.groupby('feature')['user_id'].nunique().reset_index()
+                basic_feature_breakdown.columns = ['Feature', 'Unique Users']
+                basic_feature_breakdown = basic_feature_breakdown.sort_values('Unique Users', ascending=False)
                 
-                user_progression.columns = ['user_id', 'unique_features', 'total_events', 'first_activity', 'last_activity']
-                user_progression['session_duration'] = (user_progression['last_activity'] - user_progression['first_activity']).dt.total_seconds() / 3600
+                st.dataframe(basic_feature_breakdown, use_container_width=True)
                 
-                # Create simple funnel based on engagement levels
-                basic_funnel = []
-                total_users = user_progression['user_id'].nunique()
-                
-                # Light users (1-2 features)
-                light_users = len(user_progression[user_progression['unique_features'] <= 2])
-                basic_funnel.append({
-                    'step': 'Light Usage (1-2 features)',
-                    'users': light_users,
-                    'conversion_rate': (light_users / total_users * 100) if total_users > 0 else 0
-                })
-                
-                # Medium users (3-5 features)
-                medium_users = len(user_progression[
-                    (user_progression['unique_features'] >= 3) & 
-                    (user_progression['unique_features'] <= 5)
-                ])
-                basic_funnel.append({
-                    'step': 'Medium Usage (3-5 features)',
-                    'users': medium_users,
-                    'conversion_rate': (medium_users / total_users * 100) if total_users > 0 else 0
-                })
-                
-                # Heavy users (6+ features)
-                heavy_users = len(user_progression[user_progression['unique_features'] >= 6])
-                basic_funnel.append({
-                    'step': 'Heavy Usage (6+ features)',
-                    'users': heavy_users,
-                    'conversion_rate': (heavy_users / total_users * 100) if total_users > 0 else 0
-                })
-                
-                basic_funnel_df = pd.DataFrame(basic_funnel)
-                st.dataframe(basic_funnel_df, use_container_width=True)
-                
-                # Basic funnel chart
-                fig_basic_funnel = px.bar(basic_funnel_df, x='step', y='users',
-                                        title='User Engagement Levels')
-                fig_basic_funnel.update_xaxes(tickangle=45)
-                st.plotly_chart(fig_basic_funnel, use_container_width=True)
-                
-        except Exception as e:
-            st.error(f"Error creating funnel analysis: {e}")
-            st.info("Unable to generate funnel analysis with available data.")
+                fig_basic_features = px.bar(basic_feature_breakdown, x='Feature', y='Unique Users',
+                                          title='Unique Users by Feature (from main data)')
+                fig_basic_features.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_basic_features, use_container_width=True)
+            else:
+                st.info("No feature data available for basic analysis.")
+            
+    except Exception as e:
+        st.error(f"Error creating breakdown analysis: {e}")
+        st.info("Unable to generate breakdown analysis with available data.")
 
 # Footer
 st.sidebar.markdown("---")
 st.sidebar.markdown("**🎯 Powered by Modern Data Stack**")
-st.sidebar.caption("CSV → Spark → dbt → Streamlit Pipeline")
+st.sidebar.caption("CSV → Spark → dbt → Streamlit Pipeline") = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+            
+            # Filter by date range
+            df_onboarding_filtered = df_onboarding[
+                (df_onboarding['timestamp'] >= start_date) &
+                (df_onboarding['timestamp'] < end_date)
+            ]
+            df_feature_adoption_filtered = df_feature_adoption[
+                (df_feature_adoption['timestamp'] >= start_date) &
+                (df_feature_adoption['timestamp'] < end_date)
+            ]
+            df_workflow_completion_filtered = df_workflow_completion[
+                (df_workflow_completion['timestamp'] >= start_date) &
+                (df_workflow_completion['timestamp'] < end_date)
+            ]
+            
+            # Apply user filter if specific user selected
+            if selected_user != 'All':
+                df_onboarding_filtered = df_onboarding_filtered[df_onboarding_filtered['user_id'] == selected_user]
+                df_feature_adoption_filtered = df_feature_adoption_filtered[df_feature_adoption_filtered['user_id'] == selected_user]
+                df_workflow_completion_filtered = df_workflow_completion_filtered[df_workflow_completion_filtered['user_id'] == selected_user]
+            
+            # Create funnel selector
+            funnel_options = {
+                "Onboarding Funnel": df_onboarding_filtered,
+                "Feature Adoption Funnel": df_feature_adoption_filtered,
+                "Workflow Completion Funnel": df_workflow_completion_filtered
+            }
+            
+            selected_funnel = st.selectbox("Select Funnel Type", list(funnel_options.keys()))
+            selected_funnel_data = funnel_options[selected_funnel]
+            
+            if len(selected_funnel_data) > 0:
+                
+                # Group by funnel step and count unique users
+                funnel_analysis = selected_funnel_data.groupby(['funnel_step', 'step_order'])['user_id'].nunique().reset_index()
+                funnel_analysis = funnel_analysis.sort_values('step_order')
+                funnel_analysis.columns = ['Step', 'Order', 'Users']
+                
+                # Calculate conversion rates
+                total_users_started = funnel_analysis['Users'].iloc[0] if len(funnel_analysis) > 0 else 0
+                funnel_analysis['Conversion Rate (%)'] = (funnel_analysis['Users'] / total_users_started * 100) if total_users_started > 0 else 0
+                
+                # Calculate drop-off rates
+                funnel_analysis['Drop-off Rate (%)'] = 100 - funnel_analysis['Conversion Rate (%)']
+                
+                # Display funnel table
+                st.subheader(f"{selected_funnel} Analysis")
+                st.dataframe(funnel_analysis[['Step', 'Users', 'Conversion Rate (%)', 'Drop-off Rate (%)']], use_container_width=True)
+                
+                # Funnel chart
+                fig_funnel = px.funnel(funnel_analysis, x='Users', y='Step', 
+                                     title=f'{selected_funnel} - User Progression')
+                st.plotly_chart(fig_funnel, use_container_width=True)
+                
+                # Conversion rate trend
+                fig_conversion = px.bar(funnel_analysis, x='Step', y='Conversion Rate (%)',
+                                      title=f'{selected_funnel} - Conversion Rates by Step')
+                fig_conversion.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_conversion, use_container_width=True)
+                
+            else:
+                st.warning(f"No data available for {selected_funnel} with the current filters. Please check your data or adjust filters.")
+                
+        except FileNotFoundError as e:
+            st.warning(f"Funnel CSV files not found: {e}. Showing basic user progression analysis.")
+            
+            # Basic funnel using feature usage data
+            user_progression = df_filtered.groupby('user_id').agg({
+                'feature': 'nunique',
+                'event_count': 'sum',
+                'window_start': ['min', 'max']
+            }).reset_index()
+            
+            user_progression.columns = ['user_id', 'unique_features', 'total_events', 'first_activity', 'last_activity']
+            user_progression['session_duration'] = (user_progression['last_activity'] - user_progression['first_activity']).dt.total_seconds() / 3600
+            
+            # Create simple funnel based on engagement levels
+            basic_funnel = []
+            total_users = user_progression['user_id'].nunique()
+            
+            # Light users (1-2 features)
+            light_users = len(user_progression[user_progression['unique_features'] <= 2])
+            basic_funnel.append({
+                'step': 'Light Usage (1-2 features)',
+                'users': light_users,
+                'conversion_rate': (light_users / total_users * 100) if total_users > 0 else 0
+            })
+            
+            # Medium users (3-5 features)
+            medium_users = len(user_progression[
+                (user_progression['unique_features'] >= 3) & 
+                (user_progression['unique_features'] <= 5)
+            ])
+            basic_funnel.append({
+                'step': 'Medium Usage (3-5 features)',
+                'users': medium_users,
+                'conversion_rate': (medium_users / total_users * 100) if total_users > 0 else 0
+            })
+            
+            # Heavy users (6+ features)
+            heavy_users = len(user_progression[user_progression['unique_features'] >= 6])
+            basic_funnel.append({
+                'step': 'Heavy Usage (6+ features)',
+                'users': heavy_users,
+                'conversion_rate': (heavy_users / total_users * 100) if total_users > 0 else 0
+            })
+            
+            basic_funnel_df = pd.DataFrame(basic_funnel)
+            st.dataframe(basic_funnel_df, use_container_width=True)
+            
+            # Basic funnel chart
+            fig_basic_funnel = px.bar(basic_funnel_df, x='step', y='users',
+                                    title='User Engagement Levels')
+            fig_basic_funnel.update_xaxes(tickangle=45)
+            st.plotly_chart(fig_basic_funnel, use_container_width=True)
+            
+    except Exception as e:
+        st.error(f"Error creating funnel analysis: {e}")
+        st.info("Unable to generate funnel analysis with available data.")
+
+# --- Tab 7: Feature & Workflow Breakdown ---
+with tab7:
+    st.header("Feature & Workflow Breakdown Analysis")
+    
+    try:
+        # Load data for breakdown analysis
+        base_path = Path(__file__).parent.parent / "data" / "spark_processed"
+        
+        try:
+            df_feature_adoption = pd.read_csv(base_path / "funnel_feature_adoption.csv", parse_dates=["timestamp"])
+            df_workflow_completion = pd.read_csv(base_path / "funnel_workflow_completion.csv", parse_dates=["timestamp"])
+            
+            # Filter by date range
+            df_feature_adoption_filtered = df_feature_adoption[
+                (df_feature_adoption['timestamp'] >= start_date) &
+                (df_feature_adoption['timestamp'] < end_date)
+            ]
+            df_workflow_completion
